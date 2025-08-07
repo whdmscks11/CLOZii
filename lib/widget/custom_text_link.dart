@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextLink extends StatelessWidget {
@@ -14,6 +15,12 @@ class CustomTextLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return RichText(
+      text: TextSpan(
+        text: text,
+        style: style,
+        recognizer: TapGestureRecognizer()..onTap = onTap,
+      ),
+    );
   }
 }
