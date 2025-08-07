@@ -10,6 +10,7 @@ class VerificationTimer extends StatefulWidget {
 }
 
 class _VerificationTimerState extends State<VerificationTimer> {
+  Timer? _timer;
   int minutes = 1;
   int seconds = 0;
 
@@ -17,8 +18,9 @@ class _VerificationTimerState extends State<VerificationTimer> {
   void initState() {
     super.initState();
 
-    Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       setState(() {
+        if (!mounted) return;
         if (seconds != 0) {
           seconds--;
         } else {
@@ -34,12 +36,14 @@ class _VerificationTimerState extends State<VerificationTimer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
-        ),
-      ),
+    return Text(
+      '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
     );
+  }
+
+  @override
+  void dispose() {
+    _timer!.cancel();
+    super.dispose();
   }
 }

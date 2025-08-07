@@ -49,7 +49,10 @@ class _VerificationFieldState extends State<VerificationField> {
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       decoration: InputDecoration(
-        suffix: VerificationTimer(),
+        suffixIcon: Padding(
+          padding: const EdgeInsets.only(top: 13.0, right: 20.0),
+          child: VerificationTimer(),
+        ),
         hintText: 'Enter verification code',
         hintStyle: TextStyle(color: Colors.grey),
         helperText: 'Don\'t share your verification code',
