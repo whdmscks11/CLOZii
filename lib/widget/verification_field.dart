@@ -1,3 +1,4 @@
+import 'package:carrot_login/widget/verification_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -48,6 +49,7 @@ class _VerificationFieldState extends State<VerificationField> {
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       decoration: InputDecoration(
+        suffix: VerificationTimer(),
         hintText: 'Enter verification code',
         hintStyle: TextStyle(color: Colors.grey),
         helperText: 'Don\'t share your verification code',

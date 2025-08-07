@@ -1,4 +1,5 @@
 import 'package:carrot_login/screens/home_screen.dart';
+import 'package:carrot_login/widget/verification_timer.dart';
 import 'package:flutter/material.dart';
 
 final kColorScheme = ColorScheme.fromSeed(
@@ -17,10 +18,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: kColorScheme,
-      ),
-      home: HomeScreen(),
+      theme: ThemeData(colorScheme: kColorScheme),
+      home: VerificationTimer(),
     );
   }
 }
