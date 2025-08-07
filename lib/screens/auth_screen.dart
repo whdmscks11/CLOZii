@@ -28,6 +28,17 @@ class _AuthScreenState extends State<AuthScreen> {
   void onSendCodeButtonPressed() {
     setState(() {
       verifButtonPressed = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        // 좀더 세밀하게 제어할 수 있는 스낵바를 사용하고 싶다면 -> FlushBar 사용! (외부 라이브러리)
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 2),
+          shape: ContinuousRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(20.0),
+          ),
+          content: Text('verification code sent!'),
+        ),
+      );
     });
   }
 
