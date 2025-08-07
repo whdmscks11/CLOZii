@@ -98,7 +98,9 @@ class _AuthScreenState extends State<AuthScreen> {
                 onPressed: phoneNumber.length == 11
                     ? onSendCodeButtonPressed
                     : null,
-                child: Text('Send verification code'),
+                child: verifButtonPressed
+                    ? Text('Send code again')
+                    : Text('Send verification code'),
               ),
             ),
             const SizedBox(height: 8.0),
