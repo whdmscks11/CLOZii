@@ -85,20 +85,15 @@ class _LoginPromt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('Do you already have an existing account?'),
-        const SizedBox(width: 8.0),
-        CustomTextLink(
-          text: 'Login',
-          style: TextStyle(
-            color: Colors.amber[900],
-            fontWeight: FontWeight.w500,
-          ),
-          onTap: onPressed,
-        ),
-      ],
+    return CustomTextLink(
+      displayText: 'Do you already have an existing account? ',
+      style: TextStyle(color: Colors.black87),
+      linkText: 'Login',
+      linkTextStyle: TextStyle(
+        color: Colors.amber[900],
+        fontWeight: FontWeight.w500,
+      ),
+      onTap: onPressed,
     );
   }
 }

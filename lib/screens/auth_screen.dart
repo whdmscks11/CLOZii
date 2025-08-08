@@ -64,7 +64,7 @@ class _AuthScreenState extends State<AuthScreen> {
     final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    // 전화번호 별로 제한시간 지정해야 함 - 현재는 번호에 상관없이 최초 요청시 1분동안 5회 제한 
+    // 전화번호 별로 제한시간 지정해야 함 - 현재는 번호에 상관없이 최초 요청시 1분동안 5회 제한
     int firstRequestTime = prefs.getInt('firstRequestTime') ?? 0;
     int countRemaining = prefs.getInt('countRemaining') ?? 5;
     int diff = now - firstRequestTime;
@@ -83,10 +83,9 @@ class _AuthScreenState extends State<AuthScreen> {
     _startTimer();
     int count = await requestCodeCount();
 
-    // 실제 인증번호를 전송하는 로직 구현해야 함 
+    // 실제 인증번호를 전송하는 로직 구현해야 함
     // 그리고 count < 0일때는, 인증번호 전송 X
     // 가장 마지막에 전송한 인증번호를 상태로 저장 -> 인증번호 검증 로직에서 사용
-
 
     setState(() {
       verifButtonPressed = true;
@@ -205,20 +204,16 @@ class _AuthScreenState extends State<AuthScreen> {
                 onTap: verificationCode.isNotEmpty ? navigateToNext : null,
                 text: 'Get Started!',
               ),
-            const SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Changed number?', style: theme.textTheme.labelMedium),
-                const SizedBox(width: 4.0),
-                CustomTextLink(
-                  text: 'find account with email',
-                  style: theme.textTheme.labelMedium!.copyWith(
-                    decoration: TextDecoration.underline,
-                  ),
-                  onTap: () {},
+            Center(
+              child: CustomTextLink(
+                displayText: 'Changed number? ',
+                style: theme.textTheme.labelMedium,
+                linkText: 'find account with email',
+                linkTextStyle: theme.textTheme.labelMedium!.copyWith(
+                  decoration: TextDecoration.underline,
                 ),
-              ],
+                onTap: () {},
+              ),
             ),
           ],
         ),
