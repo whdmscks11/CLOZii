@@ -55,6 +55,9 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }
 
+
+  /// SharedPreferences는 Flutter에서 간단한 데이터를 기기에 영구 저장할 수 있게 해주는 플러그인
+  /// 예를 들어, 앱 설정, 로그인 상태, 인증번호 요청 횟수 같은 작은 데이터를 디스크에 저장했다가 앱을 재실행해도 유지할 수 있게 해준다. 
   Future<int> requestCodeCount() async {
     final requestCooldown = Duration(minutes: 1).inMilliseconds;
     final prefs = await SharedPreferences.getInstance();
