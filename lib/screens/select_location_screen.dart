@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:carrot_login/data/dummydata.dart';
-import 'package:carrot_login/widget/address_list.dart';
+import 'package:carrot_login/widget/address_list_tile.dart';
 import 'package:carrot_login/widget/custom_button.dart';
 import 'package:carrot_login/widget/search_field.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +69,9 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                       itemBuilder: (BuildContext context, int index) =>
                           Container(
                             padding: EdgeInsets.only(left: 8.0),
-                            child: AddressList(address: _filteredAddress[index]),
+                            child: AddressListTile(
+                              address: _filteredAddress[index],
+                            ),
                           ),
                     )
                   : Padding(
