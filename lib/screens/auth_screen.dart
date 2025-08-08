@@ -6,6 +6,7 @@ import 'package:carrot_login/widget/custom_text_link.dart';
 import 'package:carrot_login/widget/phone_number_field.dart';
 import 'package:carrot_login/widget/verification_field.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key, required this.authType});
@@ -28,9 +29,9 @@ class _AuthScreenState extends State<AuthScreen> {
   void _startTimer() {
     if (_timer?.isActive ?? false) {
       _timer!.cancel();
-      minutes = 1;
-      seconds = 0;
     }
+    minutes = 1;
+    seconds = 0;
 
     _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       setState(() {
@@ -54,11 +55,32 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }
 
-  void onSendCodeButtonPressed() {
+  Future<int> requestCodeCount() async {
+    final requestCooldown = Duration(minutes: 1).inMilliseconds;
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    int firstRequestTime = prefs.getInt('firstRequestTime') ?? 0;
+    int countRemaining = prefs.getInt('countRemaining') ?? 5;
+    int diff = now - firstRequestTime;
+
+    if (diff > requestCooldown) {
+      await prefs.setInt('firstRequestTime', now);
+      countRemaining = 5;
+    }
+
+    countRemaining--;
+    await prefs.setInt('countRemaining', countRemaining);
+    return countRemaining;
+  }
+
+  void onSendCodeButtonPressed() async {
     _startTimer();
+    int count = await requestCodeCount();
 
     setState(() {
       verifButtonPressed = true;
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         // 좀더 세밀하게 제어할 수 있는 스낵바를 사용하고 싶다면 -> FlushBar 사용! (외부 라이브러리)
         SnackBar(
@@ -67,7 +89,15 @@ class _AuthScreenState extends State<AuthScreen> {
           shape: ContinuousRectangleBorder(
             borderRadius: BorderRadiusGeometry.circular(20.0),
           ),
-          content: Text('verification code sent!'),
+          content: count >= 0
+              ? Row(
+                  children: [
+                    Text('Verification code sent.'),
+                    Spacer(flex: 1),
+                    Text('$count remaining'),
+                  ],
+                )
+              : Text('Try again later'),
         ),
       );
     });
