@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class VerificationField extends StatefulWidget {
-  const VerificationField({super.key, required this.onChanged});
+  const VerificationField({
+    super.key,
+    required this.minutes,
+    required this.seconds,
+    required this.onChanged,
+  });
 
+  final int minutes;
+  final int seconds;
   final ValueChanged<String> onChanged;
 
   @override
@@ -51,7 +58,10 @@ class _VerificationFieldState extends State<VerificationField> {
       decoration: InputDecoration(
         suffixIcon: Padding(
           padding: const EdgeInsets.only(top: 13.0, right: 20.0),
-          child: VerificationTimer(),
+          child: VerificationTimer(
+            minutes: widget.minutes,
+            seconds: widget.seconds,
+          ),
         ),
         hintText: 'Enter verification code',
         hintStyle: TextStyle(color: Colors.grey),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carrot_login/data/enums.dart';
 import 'package:carrot_login/widget/custom_button.dart';
 import 'package:carrot_login/widget/custom_text_link.dart';
@@ -19,6 +21,33 @@ class _AuthScreenState extends State<AuthScreen> {
   String verificationCode = '';
   bool verifButtonPressed = false;
 
+  Timer? _timer;
+  int minutes = 1;
+  int seconds = 0;
+
+  void _startTimer() {
+    if (_timer?.isActive ?? false) {
+      _timer!.cancel();
+      minutes = 1;
+      seconds = 0;
+    }
+
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      setState(() {
+        if (!mounted) return;
+        if (seconds > 0) {
+          seconds--;
+        } else {
+          minutes--;
+          seconds = 59;
+        }
+      });
+      if (minutes == 0 && seconds == 0) {
+        timer.cancel();
+      }
+    });
+  }
+
   void onPhoneNumberTyped(String value) {
     setState(() {
       phoneNumber = value;
@@ -26,6 +55,8 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void onSendCodeButtonPressed() {
+    _startTimer();
+
     setState(() {
       verifButtonPressed = true;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -106,7 +137,11 @@ class _AuthScreenState extends State<AuthScreen> {
             const SizedBox(height: 8.0),
 
             if (verifButtonPressed)
-              VerificationField(onChanged: onVerificationCodeTyped),
+              VerificationField(
+                minutes: minutes,
+                seconds: seconds,
+                onChanged: onVerificationCodeTyped,
+              ),
 
             const SizedBox(height: 8.0),
             if (verifButtonPressed)
@@ -133,5 +168,11 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    if (_timer != null) _timer!.cancel();
+    super.dispose();
   }
 }
