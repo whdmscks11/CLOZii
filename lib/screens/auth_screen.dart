@@ -64,6 +64,7 @@ class _AuthScreenState extends State<AuthScreen> {
     final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now().millisecondsSinceEpoch;
 
+    // 전화번호 별로 제한시간 지정해야 함 - 현재는 번호에 상관없이 최초 요청시 1분동안 5회 제한 
     int firstRequestTime = prefs.getInt('firstRequestTime') ?? 0;
     int countRemaining = prefs.getInt('countRemaining') ?? 5;
     int diff = now - firstRequestTime;
@@ -81,6 +82,11 @@ class _AuthScreenState extends State<AuthScreen> {
   void onSendCodeButtonPressed() async {
     _startTimer();
     int count = await requestCodeCount();
+
+    // 실제 인증번호를 전송하는 로직 구현해야 함 
+    // 그리고 count < 0일때는, 인증번호 전송 X
+    // 가장 마지막에 전송한 인증번호를 상태로 저장 -> 인증번호 검증 로직에서 사용
+
 
     setState(() {
       verifButtonPressed = true;
@@ -127,6 +133,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   bool _validateCode() {
+    // 전송된 인증번호 == verificationCode 확인하는 로직 구현
     return true;
   }
 
