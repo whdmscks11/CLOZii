@@ -7,11 +7,9 @@ import 'package:flutter/material.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  void navigateToLogin(BuildContext context) {
+  void navigateToAuth(BuildContext context, AuthType authType) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AuthScreen(authType: AuthType.login),
-      ),
+      MaterialPageRoute(builder: (context) => AuthScreen(authType: authType)),
     );
   }
 
@@ -26,8 +24,12 @@ class HomeScreen extends StatelessWidget {
             _ImageLogo(),
             _TitleAndSlogan(),
             const SizedBox(height: 32.0),
-            _SignUpButton(),
-            _LoginPromt(onPressed: () => navigateToLogin(context)),
+            _SignUpButton(
+              onTap: () => navigateToAuth(context, AuthType.signup),
+            ),
+            _LoginPromt(
+              onPressed: () => navigateToAuth(context, AuthType.login),
+            ),
           ],
         ),
       ),
@@ -66,11 +68,13 @@ class _TitleAndSlogan extends StatelessWidget {
 }
 
 class _SignUpButton extends StatelessWidget {
-  const _SignUpButton();
+  const _SignUpButton({required this.onTap});
+
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return CustomButton(onTap: () {}, text: 'Sign Up');
+    return CustomButton(onTap: onTap, text: 'Sign Up');
   }
 }
 
