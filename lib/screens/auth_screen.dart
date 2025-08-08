@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:carrot_login/data/enums.dart';
+import 'package:carrot_login/screens/main_screen.dart';
+import 'package:carrot_login/screens/select_location_screen.dart';
 import 'package:carrot_login/widget/custom_button.dart';
 import 'package:carrot_login/widget/custom_text_link.dart';
 import 'package:carrot_login/widget/phone_number_field.dart';
@@ -55,9 +57,8 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }
 
-
   /// SharedPreferences는 Flutter에서 간단한 데이터를 기기에 영구 저장할 수 있게 해주는 플러그인
-  /// 예를 들어, 앱 설정, 로그인 상태, 인증번호 요청 횟수 같은 작은 데이터를 디스크에 저장했다가 앱을 재실행해도 유지할 수 있게 해준다. 
+  /// 예를 들어, 앱 설정, 로그인 상태, 인증번호 요청 횟수 같은 작은 데이터를 디스크에 저장했다가 앱을 재실행해도 유지할 수 있게 해준다.
   Future<int> requestCodeCount() async {
     final requestCooldown = Duration(minutes: 1).inMilliseconds;
     final prefs = await SharedPreferences.getInstance();
@@ -112,7 +113,22 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }
 
-  void navigateToMain() {}
+  void navigateToNext() {
+    if (widget.authType == AuthType.login && _validateCode()) {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (context) => MainScreen()));
+    }
+    if (widget.authType == AuthType.signup && _validateCode()) {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (context) => SelectLocationScreen()));
+    }
+  }
+
+  bool _validateCode() {
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +195,7 @@ class _AuthScreenState extends State<AuthScreen> {
             const SizedBox(height: 8.0),
             if (verifButtonPressed)
               CustomButton(
-                onTap: verificationCode.isNotEmpty ? navigateToMain : null,
+                onTap: verificationCode.isNotEmpty ? navigateToNext : null,
                 text: 'Get Started!',
               ),
             const SizedBox(height: 8.0),
