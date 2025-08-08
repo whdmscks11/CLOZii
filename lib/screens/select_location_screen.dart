@@ -16,9 +16,9 @@ class SelectLocationScreen extends StatefulWidget {
 class _SelectLocationScreenState extends State<SelectLocationScreen> {
   Timer? _debouncer;
 
-  List<String> filteredAddress = dummyAddress;
+  List<String> _filteredAddress = dummyAddress;
 
-  void onSearchTextTyped(String text) {
+  void _onSearchTextTyped(String text) {
     setState(() {
       if (_debouncer?.isActive ?? false) _debouncer?.cancel();
 
@@ -31,7 +31,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
 
   void _filterAddress(String text) {
     setState(() {
-      filteredAddress = dummyAddress
+      _filteredAddress = dummyAddress
           .where((addr) => addr.contains(text))
           .toList();
     });
@@ -40,7 +40,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: SearchField(onchanged: onSearchTextTyped)),
+      appBar: AppBar(title: SearchField(onchanged: _onSearchTextTyped)),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -63,13 +63,13 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
             ),
             const SizedBox(height: 10.0),
             Expanded(
-              child: filteredAddress.isNotEmpty
+              child: _filteredAddress.isNotEmpty
                   ? ListView.builder(
-                      itemCount: filteredAddress.length,
+                      itemCount: _filteredAddress.length,
                       itemBuilder: (BuildContext context, int index) =>
                           Container(
                             padding: EdgeInsets.only(left: 8.0),
-                            child: AddressList(address: filteredAddress[index]),
+                            child: AddressList(address: _filteredAddress[index]),
                           ),
                     )
                   : Padding(

@@ -6,16 +6,16 @@ class CustomTextLink extends StatefulWidget {
     super.key,
     required this.linkText,
     this.linkTextStyle,
-    this.displayText,
-    this.additionalText,
+    this.prefixText,
+    this.suffixText,
     this.style,
     required this.onTap,
   });
 
   final String linkText;
   final TextStyle? linkTextStyle;
-  final String? displayText;
-  final String? additionalText;
+  final String? prefixText;
+  final String? suffixText;
   final TextStyle? style;
   final VoidCallback onTap;
 
@@ -42,7 +42,7 @@ class _CustomTextLinkState extends State<CustomTextLink> {
   Widget build(BuildContext context) {
     return RichText(
       text: TextSpan(
-        text: widget.displayText,
+        text: widget.prefixText,
         style: widget.style,
         children: [
           TextSpan(
@@ -50,7 +50,7 @@ class _CustomTextLinkState extends State<CustomTextLink> {
             style: widget.linkTextStyle,
             recognizer: _tapRecognizer,
           ),
-          TextSpan(text: widget.additionalText, style: widget.style),
+          TextSpan(text: widget.suffixText, style: widget.style),
         ],
       ),
     );

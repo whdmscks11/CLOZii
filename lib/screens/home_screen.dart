@@ -27,9 +27,7 @@ class HomeScreen extends StatelessWidget {
             _SignUpButton(
               onTap: () => navigateToAuth(context, AuthType.signup),
             ),
-            _LoginPromt(
-              onPressed: () => navigateToAuth(context, AuthType.login),
-            ),
+            _LoginPromt(onTap: () => navigateToAuth(context, AuthType.login)),
           ],
         ),
       ),
@@ -79,21 +77,21 @@ class _SignUpButton extends StatelessWidget {
 }
 
 class _LoginPromt extends StatelessWidget {
-  const _LoginPromt({required this.onPressed});
+  const _LoginPromt({required this.onTap});
 
-  final VoidCallback onPressed;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return CustomTextLink(
-      displayText: 'Do you already have an existing account? ',
+      prefixText: 'Do you already have an existing account? ',
       style: TextStyle(color: Colors.black87),
       linkText: 'Login',
       linkTextStyle: TextStyle(
         color: Colors.amber[900],
         fontWeight: FontWeight.w500,
       ),
-      onTap: onPressed,
+      onTap: onTap,
     );
   }
 }

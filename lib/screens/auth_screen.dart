@@ -20,46 +20,46 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  String phoneNumber = '';
-  String verificationCode = '';
-  bool verifButtonPressed = false;
+  String _phoneNumber = '';
+  String _verificationCode = '';
+  bool _verifButtonPressed = false;
 
   Timer? _timer;
-  int minutes = 1;
-  int seconds = 0;
+  int _minutes = 1;
+  int _seconds = 0;
 
   void _startTimer() {
     if (_timer?.isActive ?? false) {
       _timer!.cancel();
     }
-    minutes = 1;
-    seconds = 0;
+    _minutes = 1;
+    _seconds = 0;
 
     _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       setState(() {
         if (!mounted) return;
-        if (seconds > 0) {
-          seconds--;
+        if (_seconds > 0) {
+          _seconds--;
         } else {
-          minutes--;
-          seconds = 59;
+          _minutes--;
+          _seconds = 59;
         }
       });
-      if (minutes == 0 && seconds == 0) {
+      if (_minutes == 0 && _seconds == 0) {
         timer.cancel();
       }
     });
   }
 
-  void onPhoneNumberTyped(String value) {
+  void _onPhoneNumberTyped(String value) {
     setState(() {
-      phoneNumber = value;
+      _phoneNumber = value;
     });
   }
 
   /// SharedPreferences는 Flutter에서 간단한 데이터를 기기에 영구 저장할 수 있게 해주는 플러그인
   /// 예를 들어, 앱 설정, 로그인 상태, 인증번호 요청 횟수 같은 작은 데이터를 디스크에 저장했다가 앱을 재실행해도 유지할 수 있게 해준다.
-  Future<int> requestCodeCount() async {
+  Future<int> _requestCodeCount() async {
     final requestCooldown = Duration(minutes: 1).inMilliseconds;
     final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now().millisecondsSinceEpoch;
@@ -79,16 +79,16 @@ class _AuthScreenState extends State<AuthScreen> {
     return countRemaining;
   }
 
-  void onSendCodeButtonPressed() async {
+  void _onSendCodeButtonPressed() async {
     _startTimer();
-    int count = await requestCodeCount();
+    int count = await _requestCodeCount();
 
     // 실제 인증번호를 전송하는 로직 구현해야 함
     // 그리고 count < 0일때는, 인증번호 전송 X
     // 가장 마지막에 전송한 인증번호를 상태로 저장 -> 인증번호 검증 로직에서 사용
 
     setState(() {
-      verifButtonPressed = true;
+      _verifButtonPressed = true;
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         // 좀더 세밀하게 제어할 수 있는 스낵바를 사용하고 싶다면 -> FlushBar 사용! (외부 라이브러리)
@@ -112,13 +112,13 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }
 
-  void onVerificationCodeTyped(String value) {
+  void _onVerificationCodeTyped(String value) {
     setState(() {
-      verificationCode = value;
+      _verificationCode = value;
     });
   }
 
-  void navigateToNext() {
+  void _navigateToNext() {
     if (widget.authType == AuthType.login && _validateCode()) {
       Navigator.of(
         context,
@@ -169,8 +169,8 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
             const SizedBox(height: 8.0),
             PhoneNumberField(
-              onChanged: onPhoneNumberTyped,
-              enabled: !verifButtonPressed,
+              onChanged: _onPhoneNumberTyped,
+              enabled: !_verifButtonPressed,
             ),
             const SizedBox(height: 8.0),
             SizedBox(
@@ -181,32 +181,32 @@ class _AuthScreenState extends State<AuthScreen> {
                     borderRadius: BorderRadius.circular(4.0),
                   ),
                 ),
-                onPressed: phoneNumber.length == 11
-                    ? onSendCodeButtonPressed
+                onPressed: _phoneNumber.length == 11
+                    ? _onSendCodeButtonPressed
                     : null,
-                child: verifButtonPressed
+                child: _verifButtonPressed
                     ? Text('Send code again')
                     : Text('Send verification code'),
               ),
             ),
             const SizedBox(height: 8.0),
 
-            if (verifButtonPressed)
+            if (_verifButtonPressed)
               VerificationField(
-                minutes: minutes,
-                seconds: seconds,
-                onChanged: onVerificationCodeTyped,
+                minutes: _minutes,
+                seconds: _seconds,
+                onChanged: _onVerificationCodeTyped,
               ),
 
             const SizedBox(height: 8.0),
-            if (verifButtonPressed)
+            if (_verifButtonPressed)
               CustomButton(
-                onTap: verificationCode.isNotEmpty ? navigateToNext : null,
+                onTap: _verificationCode.isNotEmpty ? _navigateToNext : null,
                 text: 'Get Started!',
               ),
             Center(
               child: CustomTextLink(
-                displayText: 'Changed number? ',
+                prefixText: 'Changed number? ',
                 style: theme.textTheme.labelMedium,
                 linkText: 'find account with email',
                 linkTextStyle: theme.textTheme.labelMedium!.copyWith(
