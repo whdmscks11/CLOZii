@@ -30,7 +30,7 @@ class CustomButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: Colors.white),
+              if (icon != null) Icon(icon, color: Colors.white),
               const SizedBox(width: 4.0),
               Text(
                 text,

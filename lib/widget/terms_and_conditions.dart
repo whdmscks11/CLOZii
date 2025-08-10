@@ -107,7 +107,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                 Column(
                   children: [
                     Align(
-                      alignment: AlignmentGeometry.xy(-0.37, 0),
+                      alignment: AlignmentGeometry.xy(-0.32, 0),
                       child: Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
@@ -115,7 +115,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     ),
                     const SizedBox(height: 14.0),
                     Align(
-                      alignment: AlignmentGeometry.xy(-0.37, 0),
+                      alignment: AlignmentGeometry.xy(-0.32, 0),
                       child: Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
@@ -123,7 +123,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     ),
                     const SizedBox(height: 14.0),
                     Align(
-                      alignment: AlignmentGeometry.xy(-0.37, 0),
+                      alignment: AlignmentGeometry.xy(-0.32, 0),
                       child: Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
