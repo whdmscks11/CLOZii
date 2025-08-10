@@ -65,7 +65,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
         _phoneNumberFomatter,
       ],
       decoration: InputDecoration(
-        prefixText: !_readOnly || _controller.text.length > 1 ? '09' : '',
+        prefixText: !_readOnly || _controller.text.isNotEmpty ? '09' : '',
         prefixStyle: TextStyle(
           color: widget.enabled ? Colors.black : Colors.grey,
           fontSize: 15.75,
