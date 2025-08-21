@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 /// - seedColor를 기준으로 밝은 테마 생성
 /// - surface 컬러 별도 지정 (기본 배경색)
 final kColorScheme = ColorScheme.fromSeed(
-  seedColor: Colors.amber[800]!,
+  seedColor: Color(0xFFFF8566),
   brightness: Brightness.light,
-  surface: Color.fromARGB(255, 254, 247, 235),
+  surface: Color(0xFFFFF5E7),
 );
 
 /// 앱 진입점(main 함수)

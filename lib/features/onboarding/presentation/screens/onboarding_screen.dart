@@ -1,3 +1,4 @@
+import 'package:carrot_login/core/const/colors.dart';
 import 'package:carrot_login/core/widgets/custom_button.dart';
 import 'package:carrot_login/features/auth/presentation/screens/auth_screen.dart';
 import 'package:carrot_login/features/auth/data/auth_type.dart';
@@ -23,7 +24,7 @@ class OnBoardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 254, 247, 235), // 부드러운 베이지톤 배경
+      backgroundColor: surface, // 부드러운 베이지톤 배경
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center, // 화면 중앙 배치
@@ -121,7 +122,7 @@ class _LoginPromt extends StatelessWidget {
       style: const TextStyle(color: Colors.black87), // 일반 텍스트 스타일
       linkText: 'Login', // 링크로 표시할 텍스트
       linkTextStyle: TextStyle(
-        color: Colors.amber[900], // 링크 색상
+        color: primaryColor, // 링크 색상
         fontWeight: FontWeight.w500,
       ),
       onTap: onTap,

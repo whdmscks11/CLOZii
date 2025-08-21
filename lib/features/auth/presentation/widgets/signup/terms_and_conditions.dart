@@ -1,7 +1,8 @@
+import 'package:carrot_login/core/const/colors.dart';
 import 'package:carrot_login/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
-/// TODO: 각 약관을 CustomTextLink로 구현해서 상세 약관 페이지로 이동시킬 예정 
+/// TODO: 각 약관을 CustomTextLink로 구현해서 상세 약관 페이지로 이동시킬 예정
 
 /// 이용 약관 및 연령 확인 화면 위젯
 /// - 전체 동의, 필수 동의, 선택 동의 체크박스 관리
@@ -47,7 +48,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
   }
 
   /// 필수 약관 동의 토글
-  /// - 필수와 선택 모두 체크되어 있으면 -> 전체 동의 항목도 체크 
+  /// - 필수와 선택 모두 체크되어 있으면 -> 전체 동의 항목도 체크
   /// - 전체 체크 상태에서 필수 항목 체크 해제 시 -> 전체 동의 항목도 체크 해제
   void _toggleMain() {
     setState(() {
@@ -61,7 +62,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
   }
 
   /// 선택 약관 동의 토글
-  /// - 필수와 선택 모두 체크되어 있으면 -> 전체 동의 항목도 체크 
+  /// - 필수와 선택 모두 체크되어 있으면 -> 전체 동의 항목도 체크
   /// - 전체 체크 상태에서 선택 항목 체크 해제 시 -> 전체 동의 항목도 체크 해제
   void _toggleOptional() {
     setState(() {
@@ -99,7 +100,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
               Row(
                 children: [
                   // 커스텀 체크 박스 (테두리 O)
-                  // TODO: 토글 시 애니메이션 효과 추가 
+                  // TODO: 토글 시 애니메이션 효과 추가
                   IconButton(
                     highlightColor: Colors.transparent,
                     onPressed: _toggleAll,
@@ -107,7 +108,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       isCheckedAll
                           ? Icons.check_circle_rounded
                           : Icons.radio_button_off_rounded,
-                      color: isCheckedAll ? Colors.amber[800] : Colors.grey,
+                      color: isCheckedAll ? primaryColor : onDisabled,
                     ),
                   ),
                   Text('Accept All Terms and Conditions'),
@@ -120,14 +121,14 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
               Row(
                 children: [
                   // 커스텀 체크 박스 (테두리 X)
-                  // TODO: 체크 박스 토글 시 애니메이션 효과 추가 
+                  // TODO: 체크 박스 토글 시 애니메이션 효과 추가
                   // TODO: 드롭다운 아이콘 변경 시 애니메이션 효과 추가
-                  // TODO: 드롭다운 애니메이션 효과 추가 
+                  // TODO: 드롭다운 애니메이션 효과 추가
                   IconButton(
                     onPressed: _toggleMain,
                     icon: Icon(
                       Icons.check,
-                      color: isMainChecked ? Colors.amber[800] : Colors.grey,
+                      color: isMainChecked ? primaryColor : onDisabled,
                     ),
                   ),
                   Text('(Required) Terms and Conditions'),
@@ -174,14 +175,12 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
               Row(
                 children: [
                   // 커스텀 체크 박스 (테두리 X)
-                  // TODO: 체크 박스 토글 시 애니메이션 효과 추가 
+                  // TODO: 체크 박스 토글 시 애니메이션 효과 추가
                   IconButton(
                     onPressed: _toggleOptional,
                     icon: Icon(
                       Icons.check,
-                      color: isOptionalChecked
-                          ? Colors.amber[800]
-                          : Colors.grey,
+                      color: isOptionalChecked ? primaryColor : onDisabled,
                     ),
                   ),
                   Text('(Optional) Terms and Conditions'),
@@ -210,8 +209,8 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     children: [
                       Radio<String>(
                         value: '18_up',
-                        groupValue: _selectedOption, // 모든 라디오 버튼이 공유하는 필드 
-                        activeColor: Colors.amber[800],
+                        groupValue: _selectedOption, // 모든 라디오 버튼이 공유하는 필드
+                        activeColor: primaryColor,
                         onChanged: (value) {
                           setState(() {
                             // 라디오 버튼의 공유 필드가 나의 value 와 일치하면 선택된 것 ✅
@@ -229,7 +228,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       Radio<String>(
                         value: '18_down',
                         groupValue: _selectedOption, // 모든 라디오 버튼이 공유하는 필드
-                        activeColor: Colors.amber[800],
+                        activeColor: primaryColor,
                         onChanged: (value) {
                           setState(() {
                             // 라디오 버튼의 공유 필드가 나의 value 와 일치하면 선택된 것 ✅

@@ -1,3 +1,4 @@
+import 'package:carrot_login/core/const/colors.dart';
 import 'package:carrot_login/features/auth/presentation/widgets/verification_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,7 +70,9 @@ class _VerificationFieldState extends State<VerificationField> {
       decoration: InputDecoration(
         /// 인증 타이머 표시
         suffixIcon: Padding(
-          padding: const EdgeInsets.only(top: 13.0, right: 20.0), /// 타이머 위치 조정 
+          padding: const EdgeInsets.only(top: 13.0, right: 20.0),
+
+          /// 타이머 위치 조정
           /// 타이머 레이아웃 위젯
           /// 예) '00:00'
           child: VerificationTimer(
@@ -78,7 +81,7 @@ class _VerificationFieldState extends State<VerificationField> {
           ),
         ),
         hintText: 'Enter verification code',
-        hintStyle: TextStyle(color: Colors.grey),
+        hintStyle: TextStyle(color: onDisabled),
         helperText: 'Don\'t share your verification code',
         border: OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
