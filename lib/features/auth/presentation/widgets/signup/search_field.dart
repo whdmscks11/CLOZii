@@ -15,41 +15,52 @@ class SearchField extends StatefulWidget {
 
 class _SearchFieldState extends State<SearchField> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  bool _readOnly = true;
 
   /// 텍스트 필드 내 텍스트 지우기 함수
   void _clearText() {
     setState(() {
       _controller.clear(); // 텍스트 삭제
+      widget.onchanged(_controller.text); // 텍스트 삭제 후 다시 주소 필터링 하기 위해
     });
   }
 
-  /// TODO: 검색 필드 기본 상태 readOnly = true 
-  /// - 탭하면 readOnly = false
-  /// - 다른 곳 탭하면 readOnly = true
+  /// TODO: 검색 필드 기본 상태 readOnly = true
+  void onTap() {
+    setState(() {
+      _readOnly = false;
+    });
+
+    _focusNode.requestFocus();
+  }
+
+  void onTapOutside(PointerDownEvent event) {
+    setState(() {
+      _readOnly = true;
+    });
+
+    _focusNode.unfocus();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      focusNode: _focusNode,
+      readOnly: _readOnly,
+      onTap: onTap,
+      onTapOutside: onTapOutside,
       controller: _controller,
       onChanged: widget.onchanged, // 텍스트 변경 시 주소 필터링
       decoration: InputDecoration(
-        // 비활성 상태(포커스 없을 때) 검색 필드 스타일
-        // 밑줄 색 연한 회색
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: const Color.fromARGB(255, 208, 208, 208),
-          ),
-          borderRadius: BorderRadius.circular(8.0),
+        isDense: true,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: BorderSide(color: Colors.black26),
         ),
-        // 활성 상태(포커스 있을 때) 검색 필드 스타일
-        // 밑줄 색 좀 더 진한 회색
-        // 밑줄 좀 더 굵게
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: const Color.fromARGB(255, 144, 144, 144),
-            width: 1.5,
-          ),
-          borderRadius: BorderRadius.circular(8.0),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: BorderSide(color: Colors.black45),
         ),
         prefixIcon: Icon(Icons.search), // 왼쪽 돋보기 아이콘
         hintText: 'Search', // 입력 안내 텍스트
