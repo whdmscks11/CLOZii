@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:carrot_login/core/data/dummydata.dart';
 import 'package:carrot_login/core/widgets/custom_button.dart';
+import 'package:carrot_login/features/auth/presentation/screens/signup/map_tiler_screen.dart';
 import 'package:carrot_login/features/auth/presentation/widgets/signup/address_list_tile.dart';
 import 'package:carrot_login/features/auth/presentation/widgets/signup/search_field.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
 
   /// 검색어 입력 시 호출
   /// - 디바운서를 이용해 입력이 멈춘 뒤 500ms 후에 필터링 실행
-  /// - 원래는 매 입력마다 _filterAddress() 가 실행됐는데 
+  /// - 원래는 매 입력마다 _filterAddress() 가 실행됐는데
   /// - 디바운서로 인해 입력 후 500ms 전에 다음 입력이 생기면 이전 타이머가 무시됨
   void _onSearchTextTyped(String text) {
     setState(() {
@@ -50,6 +51,12 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
     });
   }
 
+  void _showMap() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => MapTilerScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +72,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
               text: 'Search from current location',
 
               // TODO: 지도 화면과 연결 (Marker로 지정한 LatLng 리턴💡)
-              onTap: () {}, 
+              onTap: _showMap,
             ),
 
             const SizedBox(height: 18.0),
@@ -85,21 +92,22 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
             const SizedBox(height: 10.0),
 
             // 주소 목록 또는 "검색 결과 없음" 메시지 출력
-            Expanded(              
+            Expanded(
               child: _filteredAddress.isNotEmpty
-                    // 검색어가 포함된 주소가 있으면 ListView.builder로 출력
+                  // 검색어가 포함된 주소가 있으면 ListView.builder로 출력
                   ? ListView.builder(
                       itemCount: _filteredAddress.length,
                       itemBuilder: (BuildContext context, int index) =>
                           Container(
                             padding: EdgeInsets.only(left: 8.0),
+
                             /// 필터링된 주소 항목
                             child: AddressListTile(
                               address: _filteredAddress[index],
                             ),
                           ),
                     )
-                    // 검색어가 포함된 주소가 없으면 "검색 결과 없음" 안내
+                  // 검색어가 포함된 주소가 없으면 "검색 결과 없음" 안내
                   : Padding(
                       padding: const EdgeInsets.symmetric(vertical: 50.0),
                       child: Text('No search results found.'),
