@@ -1,4 +1,4 @@
-import 'package:carrot_login/widget/verification_timer.dart';
+import 'package:carrot_login/features/auth/presentation/widgets/verification_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

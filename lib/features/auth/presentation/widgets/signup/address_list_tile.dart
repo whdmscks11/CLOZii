@@ -1,4 +1,4 @@
-import 'package:carrot_login/widget/terms_and_conditions.dart';
+import 'package:carrot_login/features/auth/presentation/widgets/signup/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
 
 /// 주소 목록에서 각 항목을 보여주는 리스트 타일 위젯

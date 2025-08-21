@@ -1,4 +1,4 @@
-import 'package:carrot_login/widget/custom_button.dart';
+import 'package:carrot_login/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 /// TODO: 각 약관을 CustomTextLink로 구현해서 상세 약관 페이지로 이동시킬 예정 

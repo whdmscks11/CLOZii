@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:carrot_login/data/enums.dart';
-import 'package:carrot_login/screens/main_screen.dart';
-import 'package:carrot_login/screens/select_location_screen.dart';
-import 'package:carrot_login/widget/custom_button.dart';
-import 'package:carrot_login/widget/custom_text_link.dart';
-import 'package:carrot_login/widget/phone_number_field.dart';
-import 'package:carrot_login/widget/verification_field.dart';
+import 'package:carrot_login/core/widgets/custom_button.dart';
+import 'package:carrot_login/features/auth/data/auth_type.dart';
+import 'package:carrot_login/features/home/presentation/screens/home_screen.dart';
+import 'package:carrot_login/features/auth/presentation/screens/signup/select_location_screen.dart';
+import 'package:carrot_login/core/widgets/custom_text_link.dart';
+import 'package:carrot_login/features/auth/presentation/widgets/phone_number_field.dart';
+import 'package:carrot_login/features/auth/presentation/widgets/verification_field.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -69,7 +69,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   /// 전화번호 입력 이벤트 처리
-  /// 매 입력마다 호출됨 
+  /// 매 입력마다 호출됨
   void _onPhoneNumberTyped(String value) {
     setState(() {
       _phoneNumber = value;
@@ -81,12 +81,13 @@ class _AuthScreenState extends State<AuthScreen> {
   /// - 1분(임시) 동안 최대 5회 제한 (현재 전화번호 구분 로직은 구현 안함)
   Future<int> _requestCodeCount() async {
     final requestCooldown = Duration(minutes: 1).inMilliseconds; // 제한 시간 1분
-    final prefs = await SharedPreferences.getInstance(); // 네이티브 저장소 연결 
+    final prefs = await SharedPreferences.getInstance(); // 네이티브 저장소 연결
     final now = DateTime.now().millisecondsSinceEpoch; // 메서드가 호출된 시간 (밀리초)
 
-    int firstRequestTime = prefs.getInt('firstRequestTime') ?? 0; // 제한 횟수 5회 중 첫번째로 요청한 시각  
-    int countRemaining = prefs.getInt('countRemaining') ?? 5; // 남은 제한 횟수 
-    int diff = now - firstRequestTime; // 메서드가 호출된 시간 - 첫 인증번호 요청 시간 
+    int firstRequestTime =
+        prefs.getInt('firstRequestTime') ?? 0; // 제한 횟수 5회 중 첫번째로 요청한 시각
+    int countRemaining = prefs.getInt('countRemaining') ?? 5; // 남은 제한 횟수
+    int diff = now - firstRequestTime; // 메서드가 호출된 시간 - 첫 인증번호 요청 시간
 
     // 1분이 지났으면 횟수 초기화
     if (diff > requestCooldown) {
@@ -120,13 +121,13 @@ class _AuthScreenState extends State<AuthScreen> {
       // 새 스낵바 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          behavior: SnackBarBehavior.floating, 
+          behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 2),
           shape: ContinuousRectangleBorder(
             borderRadius: BorderRadiusGeometry.circular(20.0),
           ),
 
-          // 스낵바 내용 : 
+          // 스낵바 내용 :
           // - 제한 횟수가 남아 있는 경우, "인증번호 전송됨" 문자와 남은 요청 가능 횟수 표시
           // - 제한 횟수가 0이면, "나중에 다시 시도해주세요" 표시
           content: count >= 0
@@ -153,19 +154,18 @@ class _AuthScreenState extends State<AuthScreen> {
 
   /// 인증 성공 시 다음 화면으로 이동
   void _navigateToNext() {
-
     if (widget.authType == AuthType.login && _validateCode()) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => MainScreen()),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (context) => MainScreen()));
     }
     if (widget.authType == AuthType.signup && _validateCode()) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => SelectLocationScreen()),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (context) => SelectLocationScreen()));
     }
 
-    /// TODO: validation 실패시 팝업 메시지 표시 및 입력 폼 에러 디자인 적용 
+    /// TODO: validation 실패시 팝업 메시지 표시 및 입력 폼 에러 디자인 적용
   }
 
   /// 인증번호 검증 로직
@@ -191,7 +191,6 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // 인사말
             Text(
               'Hello!',
@@ -237,8 +236,8 @@ class _AuthScreenState extends State<AuthScreen> {
                 onPressed: _phoneNumber.length == 11
                     ? _onSendCodeButtonPressed
                     : null,
-                
-                // 인증번호 요청 버튼이 한번 눌렸으면 "Send code again" 표시 
+
+                // 인증번호 요청 버튼이 한번 눌렸으면 "Send code again" 표시
                 child: _verifButtonPressed
                     ? Text('Send code again')
                     : Text('Send verification code'),
@@ -275,7 +274,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   decoration: TextDecoration.underline,
                 ),
 
-                // TODO: 이메일로 계정 찾기 로직 구현 
+                // TODO: 이메일로 계정 찾기 로직 구현
                 onTap: () {},
               ),
             ),

@@ -1,4 +1,4 @@
-import 'package:carrot_login/screens/home_screen.dart';
+import 'package:carrot_login/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
 /// 앱 전체에서 사용할 컬러 스킴 정의
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // 우측 상단 디버그 배너 숨김
       theme: ThemeData(colorScheme: kColorScheme), // 정의한 컬러 스킴 적용
-      home: HomeScreen(), // 앱 최초 진입 화면(HomeScreen) 지정
+      home: OnBoardingScreen(), // 앱 최초 진입 화면(HomeScreen) 지정
     );
   }
 }

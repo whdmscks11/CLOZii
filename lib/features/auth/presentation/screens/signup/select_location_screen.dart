@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:carrot_login/data/dummydata.dart';
-import 'package:carrot_login/widget/address_list_tile.dart';
-import 'package:carrot_login/widget/custom_button.dart';
-import 'package:carrot_login/widget/search_field.dart';
+import 'package:carrot_login/core/data/dummydata.dart';
+import 'package:carrot_login/core/widgets/custom_button.dart';
+import 'package:carrot_login/features/auth/presentation/widgets/signup/address_list_tile.dart';
+import 'package:carrot_login/features/auth/presentation/widgets/signup/search_field.dart';
 import 'package:flutter/material.dart';
 
 /// 위치 선택 화면 (거래 장소 선택 화면)

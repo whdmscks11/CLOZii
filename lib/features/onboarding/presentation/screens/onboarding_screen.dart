@@ -1,14 +1,14 @@
-import 'package:carrot_login/data/enums.dart';
-import 'package:carrot_login/screens/auth_screen.dart';
-import 'package:carrot_login/widget/custom_button.dart';
-import 'package:carrot_login/widget/custom_text_link.dart';
+import 'package:carrot_login/core/widgets/custom_button.dart';
+import 'package:carrot_login/features/auth/presentation/screens/auth_screen.dart';
+import 'package:carrot_login/features/auth/data/auth_type.dart';
+import 'package:carrot_login/core/widgets/custom_text_link.dart';
 import 'package:flutter/material.dart';
 
 /// 홈 화면 (앱 시작 시 표시되는 첫 화면)
 /// - 로고, 앱 타이틀, 슬로건, 회원가입 버튼, 로그인 링크로 구성
 /// - 로그인/회원가입 화면으로 이동하는 네비게이션 기능 포함
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class OnBoardingScreen extends StatelessWidget {
+  const OnBoardingScreen({super.key});
 
   /// 로그인 / 회원가입 화면으로 이동하는 메서드
   /// - [authType] 파라미터로 이동할 화면의 타입을 지정
@@ -60,7 +60,7 @@ class _ImageLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      'assets/img/nearbayan.png', // 로고 이미지 경로
+      'assets/img/logo.png', // 로고 이미지 경로
       width: 250,
       height: 250,
     );
@@ -76,13 +76,6 @@ class _TitleAndSlogan extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text(
-          'Near Bayan', // 앱 이름
-          style: TextStyle(
-            fontSize: 32.0,
-            fontWeight: FontWeight.w700, // 굵은 제목 폰트
-          ),
-        ),
         const SizedBox(height: 4.0),
         const Text(
           'Your bayan, your marketplace.', // 앱 슬로건
