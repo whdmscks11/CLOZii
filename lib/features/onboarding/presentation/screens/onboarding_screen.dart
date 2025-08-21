@@ -29,11 +29,8 @@ class OnBoardingScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center, // 화면 중앙 배치
           children: [
-            /// 로고 이미지
-            const _ImageLogo(),
-
-            /// 앱 타이틀과 슬로건
-            const _TitleAndSlogan(),
+            /// 로고 이미지와 앱 슬로건
+            const _ImageLogoAndSlogan(),
 
             const SizedBox(height: 32.0), // 버튼과의 간격
             /// 회원가입 버튼
@@ -52,34 +49,23 @@ class OnBoardingScreen extends StatelessWidget {
   }
 }
 
-/// 로고 표시 위젯
+/// 로고와 슬로건을 표시하는 위젯
 /// - 앱 브랜드를 시각적으로 강조
 /// - 사이즈를 고정하여 일관성 유지 (디바이스에 따라 사이즈 조정 필요)
-class _ImageLogo extends StatelessWidget {
-  const _ImageLogo();
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/img/logo.png', // 로고 이미지 경로
-      width: 250,
-      height: 250,
-    );
-  }
-}
-
-/// 앱 타이틀과 슬로건 표시 위젯
-/// - 추후 ThemeData.textTheme을 적용하여 글로벌 스타일 관리 예정
-class _TitleAndSlogan extends StatelessWidget {
-  const _TitleAndSlogan();
+class _ImageLogoAndSlogan extends StatelessWidget {
+  const _ImageLogoAndSlogan();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 4.0),
+        Image.asset(
+          'assets/img/logo.png', // 로고 이미지 경로
+          width: 250,
+          height: 250,
+        ),
         const Text(
-          'Your bayan, your marketplace.', // 앱 슬로건
+          'Closer People, Closer Deals', // 앱 슬로건
           style: TextStyle(fontSize: 16.0),
         ),
       ],
