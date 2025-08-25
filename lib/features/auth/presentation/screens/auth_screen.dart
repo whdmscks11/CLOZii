@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:carrot_login/core/widgets/custom_button.dart';
 import 'package:carrot_login/features/auth/data/auth_type.dart';
 import 'package:carrot_login/features/home/presentation/screens/home_screen.dart';
 import 'package:carrot_login/features/auth/presentation/screens/signup/select_location_screen.dart';
@@ -26,9 +25,6 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   /// 사용자가 입력한 전화번호
   String _phoneNumber = '';
-
-  /// 사용자가 입력한 인증번호
-  String _verificationCode = '';
 
   /// 인증번호 발송 버튼 클릭 여부
   bool _verifButtonPressed = false;
@@ -144,20 +140,13 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }
 
-  /// 인증번호 입력 이벤트 처리
-  /// 매 입력마다 처리
-  void _onVerificationCodeTyped(String value) {
-    setState(() {
-      _verificationCode = value;
-    });
-  }
-
   /// 인증 성공 시 다음 화면으로 이동
   void _navigateToNext() {
+    print('tapped!');
     if (widget.authType == AuthType.login && _validateCode()) {
       Navigator.of(
         context,
-      ).push(MaterialPageRoute(builder: (context) => MainScreen()));
+      ).push(MaterialPageRoute(builder: (context) => HomeScreen()));
     }
     if (widget.authType == AuthType.signup && _validateCode()) {
       Navigator.of(
@@ -251,18 +240,10 @@ class _AuthScreenState extends State<AuthScreen> {
               VerificationField(
                 minutes: _minutes,
                 seconds: _seconds,
-                onChanged: _onVerificationCodeTyped,
+                onSubmitTap: _navigateToNext,
               ),
 
             const SizedBox(height: 8.0),
-
-            /// 다음 단계로 이동 버튼 (인증번호 입력 시 활성화)
-            if (_verifButtonPressed)
-              CustomButton(
-                /// TODO: 인증번호 불일치 시 Error 표시
-                onTap: _verificationCode.isNotEmpty ? _navigateToNext : null,
-                text: 'Get Started!',
-              ),
 
             /// 이메일 찾기 링크
             Center(
