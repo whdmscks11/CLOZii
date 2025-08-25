@@ -26,6 +26,9 @@ class _AuthScreenState extends State<AuthScreen> {
   /// 사용자가 입력한 전화번호
   String _phoneNumber = '';
 
+  /// 인증번호 요청 버튼 텍스트
+  String verifButtonText = 'Send verification code';
+
   /// 인증번호 발송 버튼 클릭 여부
   bool _verifButtonPressed = false;
 
@@ -76,7 +79,7 @@ class _AuthScreenState extends State<AuthScreen> {
   /// - SharedPreferences를 사용해 앱 종료 후에도 횟수 저장
   /// - 1분(임시) 동안 최대 5회 제한 (현재 전화번호 구분 로직은 구현 안함)
   Future<int> _requestCodeCount() async {
-    final requestCooldown = Duration(minutes: 1).inMilliseconds; // 제한 시간 1분
+    final requestCooldown = Duration(minutes: 3).inMilliseconds; // 제한 시간 1분
     final prefs = await SharedPreferences.getInstance(); // 네이티브 저장소 연결
     final now = DateTime.now().millisecondsSinceEpoch; // 메서드가 호출된 시간 (밀리초)
 
@@ -101,15 +104,32 @@ class _AuthScreenState extends State<AuthScreen> {
 
   /// "인증번호 전송" 버튼 클릭 처리
   void _onSendCodeButtonPressed() async {
-    _startTimer(); // 타이머 시작
     int count = await _requestCodeCount(); // 요청 제한 횟수 카운트
+    if (count > 0) {
+      _startTimer(); // 타이머 시작
+    }
 
     // TODO: 실제 인증번호 전송 로직 구현
     // TODO: count < 0 이면 전송 차단
     // TODO: 전송된 인증번호를 상태에 저장해 검증 시 사용
 
     setState(() {
+      // 스낵바 내용 :
+      // - 최초 요청 시 "인증번호 전송됨" 메시지 표시 - "Verfication code sent."
+      Widget content = Text('Verification code sent.');
+
+      // - 제한 횟수가 남아 있는 경우, 남은 요청 가능 횟수 표시 - "N verfication attems remaining."
+      if (verifButtonText == 'Send code again') {
+        content = Text('$count verification attemps remaining.');
+      }
+      
+      // - 제한 횟수를 초과한 경우 "나중에 다시 시도해주세요" 표시 - "Try again later."
+      if (count < 0) {
+        content = Text('Try again later');
+      }
+
       _verifButtonPressed = true; // 인증번호 발송 버튼 - 눌림 (true)
+      verifButtonText = 'Send code again'; // 인증번호 요청 버튼 텍스트 변경
 
       // 기존 스낵바 제거 - 기존 스낵바가 제거되기 전에 다시 스낵바가 호출될 경우를 대비
       ScaffoldMessenger.of(context).clearSnackBars();
@@ -123,18 +143,8 @@ class _AuthScreenState extends State<AuthScreen> {
             borderRadius: BorderRadiusGeometry.circular(20.0),
           ),
 
-          // 스낵바 내용 :
-          // - 제한 횟수가 남아 있는 경우, "인증번호 전송됨" 문자와 남은 요청 가능 횟수 표시
-          // - 제한 횟수가 0이면, "나중에 다시 시도해주세요" 표시
-          content: count >= 0
-              ? Row(
-                  children: [
-                    Text('Verification code sent.'),
-                    Spacer(flex: 1),
-                    Text('$count remaining'),
-                  ],
-                )
-              : Text('Try again later'),
+          // 스낵바 내용
+          content: content,
         ),
       );
     });
@@ -142,7 +152,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   /// 인증 성공 시 다음 화면으로 이동
   void _navigateToNext() {
-    print('tapped!');
     if (widget.authType == AuthType.login && _validateCode()) {
       Navigator.of(
         context,
@@ -227,9 +236,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     : null,
 
                 // 인증번호 요청 버튼이 한번 눌렸으면 "Send code again" 표시
-                child: _verifButtonPressed
-                    ? Text('Send code again')
-                    : Text('Send verification code'),
+                child: Text(verifButtonText),
               ),
             ),
 
