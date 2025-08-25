@@ -27,10 +27,12 @@ class _AuthScreenState extends State<AuthScreen> {
   String _phoneNumber = '';
 
   /// 인증번호 요청 버튼 텍스트
-  String verifButtonText = 'Send verification code';
+  String _verifButtonText = 'Send verification code';
 
   /// 인증번호 발송 버튼 클릭 여부
   bool _verifButtonPressed = false;
+
+  bool _sendCodeButtonEnabled = true;
 
   /// 인증번호 유효 시간 - 타이머
   Timer? _timer;
@@ -119,17 +121,17 @@ class _AuthScreenState extends State<AuthScreen> {
       Widget content = Text('Verification code sent.');
 
       // - 제한 횟수가 남아 있는 경우, 남은 요청 가능 횟수 표시 - "N verfication attems remaining."
-      if (verifButtonText == 'Send code again') {
+      if (_verifButtonText == 'Send code again') {
         content = Text('$count verification attemps remaining.');
       }
-      
+
       // - 제한 횟수를 초과한 경우 "나중에 다시 시도해주세요" 표시 - "Try again later."
       if (count < 0) {
         content = Text('Try again later');
       }
 
       _verifButtonPressed = true; // 인증번호 발송 버튼 - 눌림 (true)
-      verifButtonText = 'Send code again'; // 인증번호 요청 버튼 텍스트 변경
+      _verifButtonText = 'Send code again'; // 인증번호 요청 버튼 텍스트 변경
 
       // 기존 스낵바 제거 - 기존 스낵바가 제거되기 전에 다시 스낵바가 호출될 경우를 대비
       ScaffoldMessenger.of(context).clearSnackBars();
@@ -152,12 +154,12 @@ class _AuthScreenState extends State<AuthScreen> {
 
   /// 인증 성공 시 다음 화면으로 이동
   void _navigateToNext() {
-    if (widget.authType == AuthType.login && _validateCode()) {
+    if (widget.authType == AuthType.login) {
       Navigator.of(
         context,
       ).push(MaterialPageRoute(builder: (context) => HomeScreen()));
     }
-    if (widget.authType == AuthType.signup && _validateCode()) {
+    if (widget.authType == AuthType.signup) {
       Navigator.of(
         context,
       ).push(MaterialPageRoute(builder: (context) => SelectLocationScreen()));
@@ -168,9 +170,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   /// 인증번호 검증 로직
   /// TODO: 실제 전송된 번호와 입력값 비교 필요
-  bool _validateCode() {
-    return true;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,12 +230,12 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 // 전화번호가 유효하면 버튼 활성화 (추후에 유효성 검사 로직 작성 필요)
-                onPressed: _phoneNumber.length == 11
+                onPressed: _phoneNumber.length == 11 && _sendCodeButtonEnabled
                     ? _onSendCodeButtonPressed
                     : null,
 
                 // 인증번호 요청 버튼이 한번 눌렸으면 "Send code again" 표시
-                child: Text(verifButtonText),
+                child: Text(_verifButtonText),
               ),
             ),
 
@@ -248,6 +247,17 @@ class _AuthScreenState extends State<AuthScreen> {
                 minutes: _minutes,
                 seconds: _seconds,
                 onSubmitTap: _navigateToNext,
+                onVerified: () {
+                  setState(() {
+                    // 인증번호 검증 성공 시, 인증번호 전송 버튼 비활성화
+                    _sendCodeButtonEnabled = false;
+
+                    // 인증번호 검증 성공 시, 타이머 종료 
+                    if (_timer?.isActive ?? false) {
+                      _timer!.cancel();
+                    }
+                  });
+                },
               ),
 
             const SizedBox(height: 8.0),

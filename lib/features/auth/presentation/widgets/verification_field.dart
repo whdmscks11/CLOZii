@@ -14,11 +14,13 @@ class VerificationField extends StatefulWidget {
     required this.minutes, // 남은 분
     required this.seconds, // 남은 초
     required this.onSubmitTap,
+    required this.onVerified,
   });
 
   final int minutes;
   final int seconds;
   final VoidCallback onSubmitTap;
+  final VoidCallback onVerified;
 
   @override
   State<VerificationField> createState() => _VerificationFieldState();
@@ -27,6 +29,12 @@ class VerificationField extends StatefulWidget {
 class _VerificationFieldState extends State<VerificationField> {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  /// 인증번호 유효성 여부
+  bool _isValid = false;
+
+  /// 인증번호 입력 필드 활성/비활성
+  bool _isEnabled = true;
 
   /// 필드의 읽기 전용 여부
   /// - 기본값: true (탭하기 전까지 수정 불가)
@@ -66,6 +74,7 @@ class _VerificationFieldState extends State<VerificationField> {
           TextFormField(
             controller: _controller,
             readOnly: _readOnly,
+            enabled: _isEnabled,
 
             onTap: _onTap,
             onTapOutside: _onTapOutside,
@@ -94,14 +103,44 @@ class _VerificationFieldState extends State<VerificationField> {
             decoration: InputDecoration(
               /// 인증 타이머 표시
               suffixIcon: Padding(
-                padding: const EdgeInsets.only(top: 13.0, right: 20.0),
-
-                /// 타이머 위치 조정
-                /// 타이머 레이아웃 위젯
-                /// 예) '00:00'
-                child: VerificationTimer(
-                  minutes: widget.minutes,
-                  seconds: widget.seconds,
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _isValid
+                        ? Icon(Icons.check, color: Colors.green)
+                        : VerificationTimer(
+                            minutes: widget.minutes,
+                            seconds: widget.seconds,
+                          ),
+                    const SizedBox(width: 4.0),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        overlayColor: Colors.grey,
+                        minimumSize: Size(0, 0),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 12.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(4.0),
+                        ),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _isValid = true;
+                          _isEnabled = false;
+                          widget.onVerified();
+                        }
+                      },
+                      child: _isValid
+                          ? Text(
+                              'Verified',
+                              style: TextStyle(color: Colors.green),
+                            )
+                          : Text('Verify'),
+                    ),
+                  ],
                 ),
               ),
               hintText: 'Enter verification code',
@@ -114,13 +153,15 @@ class _VerificationFieldState extends State<VerificationField> {
             ),
           ),
 
-          /// 다음 단계로 이동 버튼 (인증번호 입력 시 활성화)
+          // 다음 단계로 이동 버튼 (인증번호 입력 시 활성화)
           CustomButton(
-            onTap: () {
-              if (_formKey.currentState!.validate()) {
-                widget.onSubmitTap();
-              }
-            },
+            onTap: _isValid
+                ? () {
+                    if (_formKey.currentState!.validate()) {
+                      widget.onSubmitTap();
+                    }
+                  }
+                : null,
             text: 'Get Started!',
           ),
         ],
