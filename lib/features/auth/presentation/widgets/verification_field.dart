@@ -80,16 +80,16 @@ class _VerificationFieldState extends State<VerificationField> {
 
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '인증번호를 입력해주세요.';
+                return 'Please enter the verification code.';
               }
               if (value.length != 6) {
-                return '6자리 인증번호를 입력해주세요.';
+                return 'Please enter a 6-digit verification code.';
               }
               if (value != '000000') {
-                return '인증번호가 일치하지 않습니다.';
+                return 'The verification code does not match.';
               }
               if (widget.minutes == 0 && widget.seconds == 0) {
-                return '인증번호가 만료되었습니다. 다시 요청해주세요.';
+                return 'The verification code has expired. Please request a new one.';
               }
               return null;
             },
