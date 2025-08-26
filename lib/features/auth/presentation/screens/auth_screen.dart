@@ -184,7 +184,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
       // 작은 기기에서 키보드 올라올때 UI 짤림 방지
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
