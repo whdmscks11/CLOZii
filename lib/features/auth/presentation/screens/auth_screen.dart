@@ -225,6 +225,7 @@ class _AuthScreenState extends State<AuthScreen> {
               width: double.infinity,
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
+                  overlayColor: Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4.0),
                   ),
@@ -252,7 +253,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     // 인증번호 검증 성공 시, 인증번호 전송 버튼 비활성화
                     _sendCodeButtonEnabled = false;
 
-                    // 인증번호 검증 성공 시, 타이머 종료 
+                    // 인증번호 검증 성공 시, 타이머 종료
                     if (_timer?.isActive ?? false) {
                       _timer!.cancel();
                     }

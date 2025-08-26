@@ -1,4 +1,3 @@
-import 'package:carrot_login/core/const/colors.dart';
 import 'package:flutter/material.dart';
 
 /// CustomButton
@@ -22,6 +21,8 @@ class CustomButton extends StatelessWidget {
     // 버튼이 활성 상태인지 여부 판단 (onTap이 null이면 비활성 상태)
     bool isButtonEnabled = onTap != null ? true : false;
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return GestureDetector(
       // 버튼 클릭 시 동작 (null이면 동작하지 않음)
       onTap: onTap,
@@ -33,20 +34,24 @@ class CustomButton extends StatelessWidget {
           decoration: BoxDecoration(
             // 활성 상태: 주황색
             // 비활성 상태: 회색
-            color: isButtonEnabled ? primaryColor : disabledColor,
+            color: isButtonEnabled
+                ? colorScheme.primary
+                : Theme.of(context).highlightColor,
             borderRadius: BorderRadius.circular(8.0), // 모서리를 둥글게
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
             children: [
               // 아이콘이 있을 경우에만 표시
-              if (icon != null) Icon(icon, color: onPrimary),
+              if (icon != null) Icon(icon, color: colorScheme.onPrimary),
               const SizedBox(width: 4.0), // 아이콘과 텍스트 사이 간격
               Text(
                 text, // 버튼 텍스트
                 style: TextStyle(
                   // 활성 상태: 흰색 텍스트, 비활성 상태: 회색 텍스트
-                  color: isButtonEnabled ? onPrimary : onDisabled,
+                  color: isButtonEnabled
+                      ? colorScheme.onPrimary
+                      : Theme.of(context).disabledColor,
                   fontWeight: FontWeight.w700, // 굵은 폰트
                 ),
               ),

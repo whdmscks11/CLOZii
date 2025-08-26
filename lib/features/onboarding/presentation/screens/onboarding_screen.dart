@@ -1,4 +1,3 @@
-import 'package:carrot_login/core/const/colors.dart';
 import 'package:carrot_login/core/widgets/custom_button.dart';
 import 'package:carrot_login/features/auth/presentation/screens/auth_screen.dart';
 import 'package:carrot_login/features/auth/data/auth_type.dart';
@@ -24,25 +23,27 @@ class OnBoardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: surface, // 부드러운 베이지톤 배경
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // 화면 중앙 배치
-          children: [
-            /// 로고 이미지와 앱 슬로건
-            const _ImageLogoAndSlogan(),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // 화면 중앙 배치
+            children: [
+              /// 로고 이미지와 앱 슬로건
+              const _ImageLogoAndSlogan(),
 
-            const SizedBox(height: 32.0), // 버튼과의 간격
-            /// 회원가입 버튼
-            /// - 클릭 시 AuthType.signup을 전달하여 회원가입 화면으로 이동
-            _SignUpButton(
-              onTap: () => navigateToAuth(context, AuthType.signup),
-            ),
+              const SizedBox(height: 32.0), // 버튼과의 간격
+              /// 회원가입 버튼
+              /// - 클릭 시 AuthType.signup을 전달하여 회원가입 화면으로 이동
+              _SignUpButton(
+                onTap: () => navigateToAuth(context, AuthType.signup),
+              ),
 
-            /// 로그인 링크
-            /// - 클릭 시 AuthType.login을 전달하여 로그인 화면으로 이동
-            _LoginPromt(onTap: () => navigateToAuth(context, AuthType.login)),
-          ],
+              /// 로그인 링크
+              /// - 클릭 시 AuthType.login을 전달하여 로그인 화면으로 이동
+              _LoginPromt(onTap: () => navigateToAuth(context, AuthType.login)),
+            ],
+          ),
         ),
       ),
     );
@@ -61,8 +62,8 @@ class _ImageLogoAndSlogan extends StatelessWidget {
       children: [
         Image.asset(
           'assets/img/logo.png', // 로고 이미지 경로
-          width: 250,
-          height: 250,
+          width: MediaQuery.of(context).size.width * 3 / 4,
+          height: MediaQuery.of(context).size.height / 6,
         ),
         const Text(
           'Closer People, Closer Deals', // 앱 슬로건
@@ -108,7 +109,7 @@ class _LoginPromt extends StatelessWidget {
       style: const TextStyle(color: Colors.black87), // 일반 텍스트 스타일
       linkText: 'Login', // 링크로 표시할 텍스트
       linkTextStyle: TextStyle(
-        color: primaryColor, // 링크 색상
+        color: Theme.of(context).colorScheme.primary, // 링크 색상
         fontWeight: FontWeight.w500,
       ),
       onTap: onTap,

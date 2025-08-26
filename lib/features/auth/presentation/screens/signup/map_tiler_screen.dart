@@ -98,7 +98,7 @@ class _MapTilerScreenState extends State<MapTilerScreen>
         children: [
           TileLayer(
             urlTemplate:
-                "https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${apiKey}",
+                "https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$apiKey",
             userAgentPackageName: 'com.example.app',
           ),
           MarkerLayer(

@@ -1,4 +1,3 @@
-import 'package:carrot_login/core/const/colors.dart';
 import 'package:carrot_login/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -108,7 +107,9 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       isCheckedAll
                           ? Icons.check_circle_rounded
                           : Icons.radio_button_off_rounded,
-                      color: isCheckedAll ? primaryColor : onDisabled,
+                      color: isCheckedAll
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.black87,
                     ),
                   ),
                   Text('Accept All Terms and Conditions'),
@@ -128,7 +129,9 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     onPressed: _toggleMain,
                     icon: Icon(
                       Icons.check,
-                      color: isMainChecked ? primaryColor : onDisabled,
+                      color: isMainChecked
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).disabledColor,
                     ),
                   ),
                   Text('(Required) Terms and Conditions'),
@@ -146,28 +149,29 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                 Column(
                   children: [
                     Align(
-                      alignment: AlignmentGeometry.xy(-0.32, 0),
+                      alignment: AlignmentGeometry.xy(-0.33, 0),
                       child: Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
                       ),
                     ),
-                    const SizedBox(height: 14.0),
+                    const SizedBox(height: 18),
                     Align(
-                      alignment: AlignmentGeometry.xy(-0.32, 0),
+                      alignment: AlignmentGeometry.xy(-0.33, 0),
                       child: Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
                       ),
                     ),
-                    const SizedBox(height: 14.0),
+                    const SizedBox(height: 19),
                     Align(
-                      alignment: AlignmentGeometry.xy(-0.32, 0),
+                      alignment: AlignmentGeometry.xy(-0.33, 0),
                       child: Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
                       ),
                     ),
+                    const SizedBox(height: 7),
                   ],
                 ),
 
@@ -180,7 +184,9 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     onPressed: _toggleOptional,
                     icon: Icon(
                       Icons.check,
-                      color: isOptionalChecked ? primaryColor : onDisabled,
+                      color: isOptionalChecked
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).disabledColor,
                     ),
                   ),
                   Text('(Optional) Terms and Conditions'),
@@ -210,7 +216,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       Radio<String>(
                         value: '18_up',
                         groupValue: _selectedOption, // 모든 라디오 버튼이 공유하는 필드
-                        activeColor: primaryColor,
+                        activeColor: Theme.of(context).colorScheme.primary,
                         onChanged: (value) {
                           setState(() {
                             // 라디오 버튼의 공유 필드가 나의 value 와 일치하면 선택된 것 ✅
@@ -228,7 +234,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       Radio<String>(
                         value: '18_down',
                         groupValue: _selectedOption, // 모든 라디오 버튼이 공유하는 필드
-                        activeColor: primaryColor,
+                        activeColor: Theme.of(context).colorScheme.primary,
                         onChanged: (value) {
                           setState(() {
                             // 라디오 버튼의 공유 필드가 나의 value 와 일치하면 선택된 것 ✅

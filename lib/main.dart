@@ -1,15 +1,6 @@
 import 'package:carrot_login/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
-/// 앱 전체에서 사용할 컬러 스킴 정의
-/// - seedColor를 기준으로 밝은 테마 생성
-/// - surface 컬러 별도 지정 (기본 배경색)
-final kColorScheme = ColorScheme.fromSeed(
-  seedColor: Color(0xFFFF8566),
-  brightness: Brightness.light,
-  surface: Color(0xFFFFF5E7),
-);
-
 /// 앱 진입점(main 함수)
 /// - MyApp 위젯 실행
 void main() {
@@ -25,8 +16,35 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // 우측 상단 디버그 배너 숨김
-      theme: ThemeData(colorScheme: kColorScheme), // 정의한 컬러 스킴 적용
+      themeMode: ThemeMode.system,
+      theme: _lightTheme,
+      darkTheme: _darkTheme,
       home: OnBoardingScreen(), // 앱 최초 진입 화면(HomeScreen) 지정
     );
   }
 }
+
+const brandColor = Color(0xFFFF8585);
+const secondaryColor = Color(0xFFFFC9C2);
+
+final _lightTheme = ThemeData(
+  useMaterial3: true,
+  brightness: Brightness.light,
+  colorScheme: ColorScheme.light(
+    primary: brandColor,
+    secondary: secondaryColor,
+    surface: Colors.white,
+    onSurface: Colors.black87,
+  ),
+);
+
+final _darkTheme = ThemeData(
+  useMaterial3: true,
+  brightness: Brightness.dark,
+  colorScheme: ColorScheme.dark(
+    primary: brandColor,
+    secondary: secondaryColor,
+    surface: Color(0xFF1E1E1E),
+    onSurface: Colors.white70,
+  ),
+);

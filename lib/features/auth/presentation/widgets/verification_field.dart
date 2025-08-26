@@ -1,4 +1,3 @@
-import 'package:carrot_login/core/const/colors.dart';
 import 'package:carrot_login/core/widgets/custom_button.dart';
 import 'package:carrot_login/features/auth/presentation/widgets/verification_timer.dart';
 import 'package:flutter/material.dart';
@@ -144,7 +143,7 @@ class _VerificationFieldState extends State<VerificationField> {
                 ),
               ),
               hintText: 'Enter verification code',
-              hintStyle: TextStyle(color: onDisabled),
+              hintStyle: TextStyle(color: Theme.of(context).disabledColor),
               helperText: 'Don\'t share your verification code',
               border: OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
