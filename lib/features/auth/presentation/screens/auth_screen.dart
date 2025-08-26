@@ -177,7 +177,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
     // 로그인/회원가입 여부에 따라 텍스트 변경
     final isLogin = widget.authType == AuthType.login;
-    final label = isLogin ? 'login' : 'signup';
+    final label = isLogin ? 'Login' : 'Signup';
 
     return Scaffold(
       appBar: AppBar(),
@@ -191,15 +191,23 @@ class _AuthScreenState extends State<AuthScreen> {
             // 인사말
             Text(
               'Hello!',
-              style: theme.textTheme.titleLarge!.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 21.0),
             ),
-            Text(
-              'Please $label with your phone number.',
-              style: theme.textTheme.titleLarge!.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+            Row(
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 21.0,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                Text(
+                  ' with phone number.',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 21.0),
+                ),
+              ],
             ),
 
             const SizedBox(height: 8.0),
@@ -207,7 +215,9 @@ class _AuthScreenState extends State<AuthScreen> {
             /// 개인정보 안내문
             Text(
               'Your phone number is kept safe and not be shared with neighbors.',
-              style: theme.textTheme.labelMedium,
+              style: theme.textTheme.labelMedium!.copyWith(
+                color: Colors.black54,
+              ),
             ),
 
             const SizedBox(height: 8.0),

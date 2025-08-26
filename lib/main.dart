@@ -30,7 +30,7 @@ const secondaryColor = Color(0xFFFFC9C2);
 final _lightTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.light,
-  fontFamily: 'BalooThambi2',
+  fontFamily: 'CLOZii_BalooThambi2',
   colorScheme: ColorScheme.light(
     primary: brandColor,
     secondary: secondaryColor,
