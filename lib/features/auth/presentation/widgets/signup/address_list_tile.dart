@@ -16,8 +16,9 @@ class AddressListTile extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // 모달이 화면 높이만큼 채워짐
-                                // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐 
-      builder: (context) => TermsAndConditions(), // 모달 내용: 약관 위젯
+      // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐
+      builder: (context) =>
+          TermsAndConditions(address: address), // 모달 내용: 약관 위젯
     );
   }
 
@@ -31,10 +32,7 @@ class AddressListTile extends StatelessWidget {
       minTileHeight: 50.0,
 
       // 타이틀: 왼쪽 정렬된 주소 텍스트
-      title: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(address),
-      ),
+      title: Align(alignment: Alignment.centerLeft, child: Text(address)),
 
       // 탭 시 약관 모달 시트 표시
       onTap: () => _onSelectAddress(context),

@@ -1,5 +1,8 @@
 import 'package:carrot_login/core/widgets/custom_button.dart';
+import 'package:carrot_login/features/home/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+
+enum Age { youth, adult }
 
 /// TODO: 각 약관을 CustomTextLink로 구현해서 상세 약관 페이지로 이동시킬 예정
 
@@ -8,7 +11,9 @@ import 'package:flutter/material.dart';
 /// - 필수 약관 상세 내용 펼치기 기능
 /// - 연령 확인 라디오 버튼과 시작 버튼 포함
 class TermsAndConditions extends StatefulWidget {
-  const TermsAndConditions({super.key});
+  const TermsAndConditions({super.key, required this.address});
+
+  final String address;
 
   @override
   State<TermsAndConditions> createState() => _TermsAndConditionsState();
@@ -28,7 +33,67 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
   bool isListOpen = false;
 
   // 연령 확인 라디오 버튼 선택 값 - 기본 값 선택 안됨
-  String? _selectedOption;
+  Age? _selectedOption;
+
+  void _navigateToHomeScreen() {
+    if (_selectedOption == Age.adult && (isMainChecked || isCheckedAll)) {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (context) => HomeScreen()));
+
+      // 사용자 계정 생성 로직 + 선택한 주소도 등록
+    }
+
+    if (!isMainChecked) {
+      _showAlertDialog(
+        context,
+        'You must accept the Terms and Conditions to proceed.',
+      );
+
+      // 18세 이상 인증 
+        // - 제휴를 통해 통신사 조회 API를 쓰면 18세 이상 여부 확인 가능
+        //   한국처럼 표준화된 API가 공개되어 있진 않고, 개별 통신사(Globe, Smart, DITO)와 계약해야 함 
+        // - SMS 인증으로 본인 번호 확인 → 추가로 신분증 사진 + 셀피 인증 요청
+        //   Onfido, Jumio, ShuftiPro, SmileID 같은 외부 KYC 서비스가 API로 제공
+
+        // 	•	서비스사가 법적으로 해야 할 건 “14세 미만 가입 불가”를 약관에 명시하고, 생년월일을 받는 절차 정도.
+        // 	•	실제 나이 위변조는 사용자 책임이고, 서비스사는 면책됩니다.
+        // 	•	그래서 당근마켓, 쿠팡, 네이버 등도 별도 나이 검증 절차 없이 SMS 인증만으로 운영합니다.
+
+        // ✅ CLOZ 같은 글로벌 서비스도 필리핀 로컬 법률 기준으로:
+        // 	•	가입 시 “만 18세 이상만 사용 가능”을 약관에 명시.
+        // 	•	사용자 입력 + SMS 인증만으로 처리 → 실제 나이 확인은 안 하지만 법적 책임은 회피 가능.
+      return;
+    }
+
+    if (_selectedOption == Age.youth) {
+      _showAlertDialog(
+        context,
+        'You must be at least 18 years old to use this app.',
+      );
+      return;
+    }
+  }
+
+  void _showAlertDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Alert"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // 팝업 닫기
+              },
+              child: const Text("ok"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   /// 전체 동의 토글
   /// - 전체 체크 시 필수/선택 모두 체크
@@ -149,7 +214,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                 Column(
                   children: [
                     Align(
-                      alignment: AlignmentGeometry.xy(-0.33, 0),
+                      alignment: AlignmentGeometry.xy(-0.43, 0),
                       child: Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
@@ -157,7 +222,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     ),
                     const SizedBox(height: 18),
                     Align(
-                      alignment: AlignmentGeometry.xy(-0.33, 0),
+                      alignment: AlignmentGeometry.xy(-0.43, 0),
                       child: Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
@@ -165,7 +230,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     ),
                     const SizedBox(height: 19),
                     Align(
-                      alignment: AlignmentGeometry.xy(-0.33, 0),
+                      alignment: AlignmentGeometry.xy(-0.43, 0),
                       child: Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
@@ -213,8 +278,8 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   // 18세 이상 라디오 버튼
                   Row(
                     children: [
-                      Radio<String>(
-                        value: '18_up',
+                      Radio<Age>(
+                        value: Age.adult,
                         groupValue: _selectedOption, // 모든 라디오 버튼이 공유하는 필드
                         activeColor: Theme.of(context).colorScheme.primary,
                         onChanged: (value) {
@@ -231,8 +296,8 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   // 18세 미만 라디오 버튼
                   Row(
                     children: [
-                      Radio<String>(
-                        value: '18_down',
+                      Radio<Age>(
+                        value: Age.youth,
                         groupValue: _selectedOption, // 모든 라디오 버튼이 공유하는 필드
                         activeColor: Theme.of(context).colorScheme.primary,
                         onChanged: (value) {
@@ -247,7 +312,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   ),
 
                   // TODO: 시작 버튼 (앱 메인 페이지로 이동)
-                  CustomButton(text: 'Start', onTap: () {}),
+                  CustomButton(text: 'Start', onTap: _navigateToHomeScreen),
                 ],
               ),
             ],
