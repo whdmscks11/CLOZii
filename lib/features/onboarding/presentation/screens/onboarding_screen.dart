@@ -63,11 +63,10 @@ class _ImageLogoAndSlogan extends StatelessWidget {
         Image.asset(
           'assets/img/logo.png', // 로고 이미지 경로
           width: MediaQuery.of(context).size.width * 3 / 4,
-          height: MediaQuery.of(context).size.height / 6,
         ),
         const Text(
           'Closer People, Closer Deals', // 앱 슬로건
-          style: TextStyle(fontSize: 16.0),
+          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
         ),
       ],
     );

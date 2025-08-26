@@ -52,7 +52,8 @@ class CustomButton extends StatelessWidget {
                   color: isButtonEnabled
                       ? colorScheme.onPrimary
                       : Theme.of(context).disabledColor,
-                  fontWeight: FontWeight.w700, // 굵은 폰트
+                  fontWeight: FontWeight.w800, // 굵은 폰트
+                  fontSize: 14.0,
                 ),
               ),
             ],
