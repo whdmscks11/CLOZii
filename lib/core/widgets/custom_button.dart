@@ -31,11 +31,10 @@ class CustomButton extends StatelessWidget {
           width: double.infinity, // 가로를 최대 너비로 확장
           height: 40.0, // 버튼 높이
           decoration: BoxDecoration(
-            // 활성 상태: 주황색
-            // 비활성 상태: 회색
+            // 버튼 색상
             color: isButtonEnabled
                 ? context.colors.primary
-                : Theme.of(context).highlightColor,
+                : context.colors.shadow,
             borderRadius: BorderRadius.circular(8.0), // 모서리를 둥글게
           ),
           child: Row(
@@ -47,10 +46,10 @@ class CustomButton extends StatelessWidget {
               Text(
                 text, // 버튼 텍스트
                 style: TextStyle(
-                  // 활성 상태: 흰색 텍스트, 비활성 상태: 회색 텍스트
+                  // 버튼 텍스트 색상
                   color: isButtonEnabled
                       ? context.colors.onPrimary
-                      : Theme.of(context).disabledColor,
+                      : context.colors.scrim,
                   fontWeight: FontWeight.w800, // 굵은 폰트
                   fontSize: 14.0,
                 ),

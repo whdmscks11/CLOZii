@@ -15,6 +15,7 @@ class AddressListTile extends StatelessWidget {
   void _onSelectAddress(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.white,
       isScrollControlled: true, // 모달이 화면 높이만큼 채워짐
       // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐
       builder: (context) =>

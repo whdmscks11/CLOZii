@@ -1,3 +1,4 @@
+import 'package:carrot_login/core/theme/context_extension.dart';
 import 'package:carrot_login/core/widgets/custom_button.dart';
 import 'package:carrot_login/features/home/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -80,13 +81,14 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
   }
 
   void _showAlertDialog(BuildContext context, String message) {
-    final radius = Radius.circular(16.0);
+    final radius = Radius.circular(12.0);
 
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          backgroundColor: Colors.white,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -97,20 +99,14 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                 ),
                 child: Column(
                   children: [
-                    Text(
-                      'Notice',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 25.0,
-                      ),
-                    ),
+                    Text('Notice', style: context.textTheme.titleMedium),
                     const SizedBox(height: 10.0),
                     Text(
                       message,
-                      style: TextStyle(fontSize: 16),
+                      style: context.textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 10.0),
+                    const SizedBox(height: 12.0),
                   ],
                 ),
               ),
@@ -125,17 +121,16 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                         bottomRight: radius,
                       ),
                     ),
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer,
+                    backgroundColor: context.colors.primary,
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                   child: Text(
                     'ok',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: context.colors.onPrimary,
                     ),
                   ),
                 ),

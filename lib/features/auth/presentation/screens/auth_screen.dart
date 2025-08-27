@@ -230,8 +230,8 @@ class _AuthScreenState extends State<AuthScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
-                  backgroundColor: context.colors.primaryContainer,
-                  foregroundColor: context.colors.onPrimaryContainer,
+                  backgroundColor: context.colors.primary,
+                  foregroundColor: context.colors.onPrimary,
                   overlayColor: Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4.0),
