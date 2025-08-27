@@ -113,8 +113,23 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
         children: [
           if (dim)
             // 화면 입력 막고 반투명 딤 처리
-            const ModalBarrier(dismissible: false, color: Colors.black26),
-          const Center(child: CircularProgressIndicator()),
+            const ModalBarrier(dismissible: false, color: Colors.black45),
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                const SizedBox(height: 6.0),
+                Text(
+                  'Creating account...',
+                  style: context.textTheme.bodyLarge!.copyWith(
+                    color: context.colors.secondary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
