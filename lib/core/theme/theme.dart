@@ -1,3 +1,4 @@
+import 'package:carrot_login/core/theme/color_schemes.dart';
 import 'package:flutter/material.dart';
 
 const brandColor = Color(0xFFFF8585);
@@ -35,61 +36,62 @@ TextTheme _buildTextTheme(Brightness b) {
 }
 
 ThemeData buildLightTheme() {
-  final scheme = ColorScheme.light(
-    primary: brandColor,
-    secondary: secondaryColor,
-    surface: Colors.white,
-    onSurface: Colors.black87,
-  );
+  final scheme = buildCloziiLightScheme();
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
     colorScheme: scheme,
+    scaffoldBackgroundColor: scheme.surface,
     textTheme: _buildTextTheme(Brightness.light),
     appBarTheme: AppBarTheme(
       backgroundColor: scheme.surface,
       foregroundColor: scheme.onSurface,
-      titleTextStyle: _buildTextTheme(Brightness.light).titleLarge,
       elevation: 0,
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: scheme.primary,
-        foregroundColor: Colors.white,
-        textStyle: _buildTextTheme(Brightness.light).labelLarge,
+        foregroundColor: scheme.onPrimary,
+        textStyle: const TextStyle(fontWeight: FontWeight.w600),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
     ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: scheme.inverseSurface,
+      contentTextStyle: TextStyle(color: scheme.onInverseSurface),
+    ),
+    // disabledColor는 ColorScheme가 아닌 ThemeData 속성
+    disabledColor: scheme.onSurface.withOpacity(0.38),
   );
 }
 
 ThemeData buildDarkTheme() {
-  final scheme = ColorScheme.dark(
-    primary: brandColor,
-    secondary: secondaryColor,
-    surface: const Color(0xFF1E1E1E),
-    onSurface: Colors.white70,
-  );
+  final scheme = buildCloziiDarkScheme();
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: scheme,
+    scaffoldBackgroundColor: scheme.surface,
     textTheme: _buildTextTheme(Brightness.dark),
     appBarTheme: AppBarTheme(
       backgroundColor: scheme.surface,
       foregroundColor: scheme.onSurface,
-      titleTextStyle: _buildTextTheme(Brightness.dark).titleLarge,
       elevation: 0,
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: scheme.primary,
-        foregroundColor: Colors.white,
-        textStyle: _buildTextTheme(Brightness.dark).labelLarge,
+        foregroundColor: scheme.onPrimary,
+        textStyle: const TextStyle(fontWeight: FontWeight.w600),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
     ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: scheme.inverseSurface,
+      contentTextStyle: TextStyle(color: scheme.onInverseSurface),
+    ),
+    disabledColor: scheme.onSurface.withOpacity(0.38),
   );
 }
