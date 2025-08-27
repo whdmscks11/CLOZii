@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:carrot_login/core/utils/animation.dart';
+import 'package:carrot_login/core/utils/loading_overlay.dart';
 import 'package:carrot_login/features/auth/data/auth_type.dart';
 import 'package:carrot_login/features/home/presentation/screens/home_screen.dart';
 import 'package:carrot_login/features/auth/presentation/screens/signup/select_location_screen.dart';
@@ -154,11 +156,23 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   /// 인증 성공 시 다음 화면으로 이동
-  void _navigateToNext() {
+  void _navigateToNext() async {
     if (widget.authType == AuthType.login) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (context) => HomeScreen()));
+      final loading = showLoadingOverlay(context); // ⬅️ 현재 화면 위에 로딩만 띄움
+
+      try {
+        // TODO: 로그인 검증 로직 추가
+        await Future.delayed(Duration(seconds: 2));
+
+        if (!mounted) return;
+
+        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          fadeInRoute(HomeScreen()),
+          (route) => false, // 스택 전부 제거
+        );
+      } finally {
+        loading.remove();
+      }
     }
     if (widget.authType == AuthType.signup) {
       Navigator.of(

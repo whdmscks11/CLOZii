@@ -1,4 +1,6 @@
 import 'package:carrot_login/core/theme/context_extension.dart';
+import 'package:carrot_login/core/utils/animation.dart';
+import 'package:carrot_login/core/utils/loading_overlay.dart';
 import 'package:carrot_login/core/widgets/custom_button.dart';
 import 'package:carrot_login/features/home/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -80,9 +82,8 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
 
       if (!mounted) return;
 
-      // 2) 애니메이션 없이 홈으로 전환 (루트 네비게이터 사용)
       Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-        fadeInRoute(const HomeScreen()),
+        fadeInRoute(HomeScreen()),
         (route) => false, // 스택 전부 제거
       );
       // 따로 pop() 필요 없음: pushAndRemoveUntil이 현재(bottom sheet) 포함 스택 정리
@@ -90,51 +91,6 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
       // 전환 직전에 오버레이 제거 (mounted 체크는 OverlayEntry 제거엔 불필요)
       loading.remove();
     }
-  }
-
-  // 애니메이션 제거용 Route 헬퍼
-  Route<T> fadeInRoute<T>(
-    Widget page, {
-    Duration d = const Duration(milliseconds: 200),
-  }) {
-    return PageRouteBuilder<T>(
-      transitionDuration: d,
-      reverseTransitionDuration: d,
-      pageBuilder: (_, __, ___) => page,
-      transitionsBuilder: (_, animation, __, child) {
-        return FadeTransition(opacity: animation, child: child);
-      },
-    );
-  }
-
-  OverlayEntry showLoadingOverlay(BuildContext context, {bool dim = true}) {
-    final overlay = OverlayEntry(
-      builder: (_) => Stack(
-        children: [
-          if (dim)
-            // 화면 입력 막고 반투명 딤 처리
-            const ModalBarrier(dismissible: false, color: Colors.black45),
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                const SizedBox(height: 6.0),
-                Text(
-                  'Creating account...',
-                  style: context.textTheme.bodyLarge!.copyWith(
-                    color: context.colors.secondary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-    Overlay.of(context, rootOverlay: true).insert(overlay);
-    return overlay;
   }
 
   void _showAlertDialog(BuildContext context, String message) {
