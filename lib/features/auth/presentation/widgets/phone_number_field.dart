@@ -72,7 +72,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
       enabled: widget.enabled, // 인증번호 요청 버튼 눌림 상태에 따라 활성 또는 비활성화
       readOnly: _readOnly, // 읽기 전용 상태 반영
       maxLength: 13, // "09##-###-####" 형식 최대 길이
-      onTap: _onTap, 
+      onTap: _onTap,
       onTapOutside: _onTapOutside,
       onChanged: widget.onChanged,
       buildCounter: _hideCounter, // 글자수 카운터 숨김
@@ -86,8 +86,8 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
         prefixText: !_readOnly || _controller.text.isNotEmpty ? '09' : '',
         prefixStyle: TextStyle(
           /// 필드 활성화 시 - 숫자색 검정 / 필드 비활성화 시 - 숫자색 회색
-          color: widget.enabled ? Colors.black : Colors.grey, 
-          fontSize: 15.75,
+          color: widget.enabled ? Colors.black : Colors.grey,
+          fontSize: 16,
         ),
 
         /// 힌트 텍스트는 읽기 전용일 때만 표시
@@ -95,7 +95,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
         hintStyle: TextStyle(color: Colors.grey),
         border: OutlineInputBorder(),
 
-        // 포커스 상태 필드 테두리 색 지정 
+        // 포커스 상태 필드 테두리 색 지정
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black54),
         ),
