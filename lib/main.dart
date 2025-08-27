@@ -1,3 +1,4 @@
+import 'package:carrot_login/core/theme/theme.dart';
 import 'package:carrot_login/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -17,36 +18,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // 우측 상단 디버그 배너 숨김
       themeMode: ThemeMode.system,
-      theme: _lightTheme,
-      darkTheme: _darkTheme,
+      theme: buildLightTheme(),
+      darkTheme: buildDarkTheme(),
       home: OnBoardingScreen(), // 앱 최초 진입 화면(HomeScreen) 지정
     );
   }
 }
-
-const brandColor = Color(0xFFFF8585);
-const secondaryColor = Color(0xFFFFC9C2);
-
-final _lightTheme = ThemeData(
-  useMaterial3: true,
-  brightness: Brightness.light,
-  fontFamily: 'CLOZii_BalooThambi2',
-  colorScheme: ColorScheme.light(
-    primary: brandColor,
-    secondary: secondaryColor,
-    surface: Colors.white,
-    onSurface: Colors.black87,
-  ),
-);
-
-final _darkTheme = ThemeData(
-  useMaterial3: true,
-  brightness: Brightness.dark,
-  fontFamily: 'CLOZii_BalooThambi2',
-  colorScheme: ColorScheme.dark(
-    primary: brandColor,
-    secondary: secondaryColor,
-    surface: Color(0xFF1E1E1E),
-    onSurface: Colors.white70,
-  ),
-);
