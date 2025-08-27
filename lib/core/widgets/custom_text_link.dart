@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// CustomTextLink
 /// - 텍스트 안에 특정 부분(링크 텍스트)에만 클릭 이벤트를 줄 수 있는 커스텀 위젯
 /// - 예: "이미 계정이 있나요? [로그인]" -> 로그인에만 터치 기능 부여
-/// 
+///
 /// - prefixText(선택): 링크 앞에 올 일반 텍스트
 /// - linkText(필수): 클릭 가능(링크처럼 보이는) 텍스트
 /// - suffixText(선택): 링크 뒤에 올 일반 텍스트
@@ -14,12 +14,12 @@ import 'package:flutter/material.dart';
 class CustomTextLink extends StatefulWidget {
   const CustomTextLink({
     super.key,
-    required this.linkText,         // 클릭 가능한 텍스트
-    this.linkTextStyle,             // 클릭 텍스트 스타일
-    this.prefixText,                // 앞에 붙는 일반 텍스트
-    this.suffixText,                // 뒤에 붙는 일반 텍스트
-    this.style,                     // 일반 텍스트 스타일
-    required this.onTap,            // 클릭 시 실행할 함수
+    required this.linkText, // 클릭 가능한 텍스트
+    this.linkTextStyle, // 클릭 텍스트 스타일
+    this.prefixText, // 앞에 붙는 일반 텍스트
+    this.suffixText, // 뒤에 붙는 일반 텍스트
+    this.style, // 일반 텍스트 스타일
+    required this.onTap, // 클릭 시 실행할 함수
   });
 
   final String linkText;
@@ -57,18 +57,20 @@ class _CustomTextLinkState extends State<CustomTextLink> {
       text: TextSpan(
         // 링크 앞 텍스트 (null이면 표시 안 함)
         text: widget.prefixText,
-        style: widget.style,
+        style: DefaultTextStyle.of(context).style.merge(widget.style),
         children: [
           // 클릭 가능한 링크 텍스트
           TextSpan(
             text: widget.linkText,
-            style: widget.linkTextStyle,
+            style: DefaultTextStyle.of(
+              context,
+            ).style.merge(widget.linkTextStyle),
             recognizer: _tapRecognizer, // 여기서만 클릭 이벤트 활성화
           ),
           // 링크 뒤 텍스트 (null이면 표시 안 함)
           TextSpan(
             text: widget.suffixText,
-            style: widget.style,
+            style: DefaultTextStyle.of(context).style.merge(widget.style),
           ),
         ],
       ),

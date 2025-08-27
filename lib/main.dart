@@ -42,7 +42,7 @@ final _lightTheme = ThemeData(
 final _darkTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.dark,
-  fontFamily: 'BalooThambi2',
+  fontFamily: 'CLOZii_BalooThambi2',
   colorScheme: ColorScheme.dark(
     primary: brandColor,
     secondary: secondaryColor,
