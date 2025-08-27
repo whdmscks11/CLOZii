@@ -37,7 +37,7 @@ class _VerificationFieldState extends State<VerificationField> {
 
   /// 필드의 읽기 전용 여부
   /// - 기본값: true (탭하기 전까지 수정 불가)
-  bool _readOnly = true;
+  bool _readOnly = false;
 
   /// 필드 탭 시 읽기 전용 해제
   void _onTap() {
@@ -72,6 +72,7 @@ class _VerificationFieldState extends State<VerificationField> {
         children: [
           TextFormField(
             controller: _controller,
+            autofocus: true,
             readOnly: _readOnly,
             enabled: _isEnabled,
 

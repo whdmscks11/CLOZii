@@ -30,7 +30,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
   final TextEditingController _controller = TextEditingController();
 
   /// 읽기 전용 상태 여부
-  bool _readOnly = true;
+  bool _readOnly = false;
 
   /// 전화번호 포맷 (예: 09##-###-###)
   /// - '#' 자리에 숫자만 입력 가능
@@ -69,6 +69,7 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
   Widget build(BuildContext context) {
     return TextField(
       controller: _controller,
+      autofocus: true,
       enabled: widget.enabled, // 인증번호 요청 버튼 눌림 상태에 따라 활성 또는 비활성화
       readOnly: _readOnly, // 읽기 전용 상태 반영
       maxLength: 13, // "09##-###-####" 형식 최대 길이
