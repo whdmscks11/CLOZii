@@ -36,34 +36,25 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
   // 연령 확인 라디오 버튼 선택 값 - 기본 값 선택 안됨
   Age? _selectedOption;
 
-  void _navigateToHomeScreen() {
-    if (_selectedOption == Age.adult && (isMainChecked || isCheckedAll)) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (context) => HomeScreen()));
+  // 18세 이상 인증
+  // - 제휴를 통해 통신사 조회 API를 쓰면 18세 이상 여부 확인 가능
+  //   한국처럼 표준화된 API가 공개되어 있진 않고, 개별 통신사(Globe, Smart, DITO)와 계약해야 함
+  // - SMS 인증으로 본인 번호 확인 → 추가로 신분증 사진 + 셀피 인증 요청
+  //   Onfido, Jumio, ShuftiPro, SmileID 같은 외부 KYC 서비스가 API로 제공
 
-      // 사용자 계정 생성 로직 + 선택한 주소도 등록
-    }
+  // 	•	서비스사가 법적으로 해야 할 건 “14세 미만 가입 불가”를 약관에 명시하고, 생년월일을 받는 절차 정도.
+  // 	•	실제 나이 위변조는 사용자 책임이고, 서비스사는 면책됩니다.
+  // 	•	그래서 당근마켓, 쿠팡, 네이버 등도 별도 나이 검증 절차 없이 SMS 인증만으로 운영합니다.
 
+  // ✅ CLOZ 같은 글로벌 서비스도 필리핀 로컬 법률 기준으로:
+  // 	•	가입 시 “만 18세 이상만 사용 가능”을 약관에 명시.
+  // 	•	사용자 입력 + SMS 인증만으로 처리 → 실제 나이 확인은 안 하지만 법적 책임은 회피 가능.
+  Future<void> _onStart() async {
     if (!isMainChecked) {
       _showAlertDialog(
         context,
         'You must accept the Terms and Conditions to proceed.',
       );
-
-      // 18세 이상 인증
-      // - 제휴를 통해 통신사 조회 API를 쓰면 18세 이상 여부 확인 가능
-      //   한국처럼 표준화된 API가 공개되어 있진 않고, 개별 통신사(Globe, Smart, DITO)와 계약해야 함
-      // - SMS 인증으로 본인 번호 확인 → 추가로 신분증 사진 + 셀피 인증 요청
-      //   Onfido, Jumio, ShuftiPro, SmileID 같은 외부 KYC 서비스가 API로 제공
-
-      // 	•	서비스사가 법적으로 해야 할 건 “14세 미만 가입 불가”를 약관에 명시하고, 생년월일을 받는 절차 정도.
-      // 	•	실제 나이 위변조는 사용자 책임이고, 서비스사는 면책됩니다.
-      // 	•	그래서 당근마켓, 쿠팡, 네이버 등도 별도 나이 검증 절차 없이 SMS 인증만으로 운영합니다.
-
-      // ✅ CLOZ 같은 글로벌 서비스도 필리핀 로컬 법률 기준으로:
-      // 	•	가입 시 “만 18세 이상만 사용 가능”을 약관에 명시.
-      // 	•	사용자 입력 + SMS 인증만으로 처리 → 실제 나이 확인은 안 하지만 법적 책임은 회피 가능.
       return;
     }
 
@@ -77,7 +68,58 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
 
     if (_selectedOption == null) {
       _showAlertDialog(context, 'You need to verify your age!');
+      return;
     }
+
+    final loading = showLoadingOverlay(context); // ⬅️ 현재 화면 위에 로딩만 띄움
+
+    try {
+      // TODO: 계정 생성/로그인 호출
+      // await authRepository.signUp(...);
+      await Future.delayed(const Duration(seconds: 2)); // 예시
+
+      if (!mounted) return;
+
+      // 2) 애니메이션 없이 홈으로 전환 (루트 네비게이터 사용)
+      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        fadeInRoute(const HomeScreen()),
+        (route) => false, // 스택 전부 제거
+      );
+      // 따로 pop() 필요 없음: pushAndRemoveUntil이 현재(bottom sheet) 포함 스택 정리
+    } finally {
+      // 전환 직전에 오버레이 제거 (mounted 체크는 OverlayEntry 제거엔 불필요)
+      loading.remove();
+    }
+  }
+
+  // 애니메이션 제거용 Route 헬퍼
+  Route<T> fadeInRoute<T>(
+    Widget page, {
+    Duration d = const Duration(milliseconds: 200),
+  }) {
+    return PageRouteBuilder<T>(
+      transitionDuration: d,
+      reverseTransitionDuration: d,
+      pageBuilder: (_, __, ___) => page,
+      transitionsBuilder: (_, animation, __, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    );
+  }
+
+  OverlayEntry showLoadingOverlay(BuildContext context, {bool dim = true}) {
+    final overlay = OverlayEntry(
+      builder: (_) => Stack(
+        children: [
+          if (dim)
+            // 화면 입력 막고 반투명 딤 처리
+            const ModalBarrier(dismissible: false, color: Colors.black26),
+          const Center(child: CircularProgressIndicator()),
+        ],
+      ),
+    );
+    Overlay.of(context, rootOverlay: true).insert(overlay);
+    return overlay;
   }
 
   void _showAlertDialog(BuildContext context, String message) {
@@ -138,19 +180,6 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
             ],
           ),
         );
-
-        // return AlertDialog(
-        //   title: const Text("Oops!"),
-        //   content: Text(message),
-        //   actions: [
-        //     TextButton(
-        //       onPressed: () {
-        //         Navigator.of(context).pop(); // 팝업 닫기
-        //       },
-        //       child: const Text("ok"),
-        //     ),
-        //   ],
-        // );
       },
     );
   }
@@ -372,7 +401,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   ),
 
                   // TODO: 시작 버튼 (앱 메인 페이지로 이동)
-                  CustomButton(text: 'Start', onTap: _navigateToHomeScreen),
+                  CustomButton(text: 'Start', onTap: _onStart),
                 ],
               ),
             ],
