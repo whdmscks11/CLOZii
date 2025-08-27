@@ -80,21 +80,82 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
   }
 
   void _showAlertDialog(BuildContext context, String message) {
+    final radius = Radius.circular(16.0);
+
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Oops!"),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // 팝업 닫기
-              },
-              child: const Text("ok"),
-            ),
-          ],
+        return Dialog(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40.0,
+                  vertical: 10.0,
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      'Notice',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 25.0,
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(
+                      message,
+                      style: TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10.0),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: 40.0,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.only(
+                        bottomLeft: radius,
+                        bottomRight: radius,
+                      ),
+                    ),
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'ok',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
+
+        // return AlertDialog(
+        //   title: const Text("Oops!"),
+        //   content: Text(message),
+        //   actions: [
+        //     TextButton(
+        //       onPressed: () {
+        //         Navigator.of(context).pop(); // 팝업 닫기
+        //       },
+        //       child: const Text("ok"),
+        //     ),
+        //   ],
+        // );
       },
     );
   }
