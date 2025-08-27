@@ -7,6 +7,7 @@ import 'package:carrot_login/core/widgets/custom_text_link.dart';
 import 'package:carrot_login/features/auth/presentation/widgets/phone_number_field.dart';
 import 'package:carrot_login/features/auth/presentation/widgets/verification_field.dart';
 import 'package:flutter/material.dart';
+import 'package:carrot_login/core/theme/context_extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// AuthScreen
@@ -173,8 +174,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     // 로그인/회원가입 여부에 따라 텍스트 변경
     final isLogin = widget.authType == AuthType.login;
     final label = isLogin ? 'Login' : 'Signup';
@@ -189,38 +188,33 @@ class _AuthScreenState extends State<AuthScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 인사말
-            Text(
-              'Hello!',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 21.0),
-            ),
+            Text('Hello!', style: context.textTheme.titleLarge),
             Row(
               children: [
                 Text(
                   label,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 21.0,
-                    color: Theme.of(context).primaryColor,
+                  style: context.textTheme.titleLarge!.copyWith(
+                    color: context.colors.primary,
                   ),
                 ),
                 Text(
                   ' with phone number.',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 21.0),
+                  style: context.textTheme.titleLarge,
                 ),
               ],
             ),
 
-            const SizedBox(height: 8.0),
+            const SizedBox(height: 12.0),
 
             /// 개인정보 안내문
             Text(
               'Your phone number is kept safe and not be shared with neighbors.',
-              style: theme.textTheme.labelMedium!.copyWith(
+              style: context.textTheme.bodySmall!.copyWith(
                 color: Colors.black54,
               ),
             ),
 
-            const SizedBox(height: 8.0),
+            const SizedBox(height: 16.0),
 
             /// 전화번호 입력 필드
             PhoneNumberField(
@@ -228,13 +222,16 @@ class _AuthScreenState extends State<AuthScreen> {
               enabled: !_verifButtonPressed, // 인증요청 후 비활성화
             ),
 
-            const SizedBox(height: 8.0),
+            const SizedBox(height: 16.0),
 
             /// 인증번호 전송 버튼
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: context.colors.primaryContainer,
+                  foregroundColor: context.colors.onPrimaryContainer,
                   overlayColor: Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4.0),
@@ -250,7 +247,7 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ),
 
-            const SizedBox(height: 8.0),
+            const SizedBox(height: 16.0),
 
             /// 인증번호 입력 필드 (인증번호 요청 버튼 클릭 후에만 표시)
             if (_verifButtonPressed)
@@ -271,15 +268,13 @@ class _AuthScreenState extends State<AuthScreen> {
                 },
               ),
 
-            const SizedBox(height: 8.0),
-
             /// 이메일 찾기 링크
             Center(
               child: CustomTextLink(
                 prefixText: 'Changed number? ',
-                style: theme.textTheme.labelMedium,
+                style: context.textTheme.bodySmall,
                 linkText: 'find account with email',
-                linkTextStyle: theme.textTheme.labelMedium!.copyWith(
+                linkTextStyle: context.textTheme.bodySmall!.copyWith(
                   decoration: TextDecoration.underline,
                 ),
 
