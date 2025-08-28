@@ -1,5 +1,5 @@
 import 'package:carrot_login/core/theme/context_extension.dart';
-import 'package:carrot_login/features/onboarding/presentation/widgets/post_list_tile.dart';
+import 'package:carrot_login/features/home/presentation/widgets/post_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
