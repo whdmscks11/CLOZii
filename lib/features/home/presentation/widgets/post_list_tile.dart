@@ -1,5 +1,6 @@
 import 'package:carrot_login/core/theme/context_extension.dart';
 import 'package:carrot_login/core/utils/number_format.dart';
+import 'package:carrot_login/core/utils/uploaded_time.dart';
 import 'package:carrot_login/features/home/models/post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,29 +9,7 @@ class PostListTile extends StatelessWidget {
   const PostListTile({super.key, required this.post, required this.onTap});
 
   final Post post;
-  final VoidCallback onTap;
-
-  String showUploadedTime() {
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final diff = now - post.createdAt.millisecondsSinceEpoch;
-    final duration = Duration(milliseconds: diff);
-
-    if (diff < Duration.millisecondsPerMinute) {
-      final s = duration.inSeconds;
-      return '$s sec${s == 1 ? '' : 's'}';
-    }
-    if (diff < Duration.millisecondsPerHour) {
-      final m = duration.inMinutes;
-      return '$m min${m == 1 ? '' : 's'}';
-    }
-    if (diff < Duration.millisecondsPerDay) {
-      final h = duration.inHours;
-      return '$h hr${h == 1 ? '' : 's'}';
-    }
-    // 하루 이상
-    final d = duration.inDays;
-    return '$d day${d == 1 ? '' : 's'}';
-  }
+  final ValueChanged<Post> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +18,7 @@ class PostListTile extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: ListTile(
-            onTap: onTap,
+            onTap: () => onTap(post),
             title: Row(
               children: [
                 Container(
@@ -64,7 +43,7 @@ class PostListTile extends StatelessWidget {
                           style: context.textTheme.titleSmall,
                         ),
                         Text(
-                          'address · ${showUploadedTime()} ago',
+                          'address · ${showUploadedTime(post.createdAt)} ago',
                           style: context.textTheme.bodyLarge!.copyWith(
                             color: Colors.black45,
                           ),

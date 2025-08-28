@@ -3,7 +3,6 @@ import 'package:carrot_login/core/theme/context_extension.dart';
 import 'package:carrot_login/features/home/models/post.dart';
 import 'package:carrot_login/features/home/presentation/screens/post_detail_screen.dart';
 import 'package:carrot_login/features/home/presentation/widgets/post_list_tile.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// 앱 메인 화면 - 로그인 이후 화면 (게시글 목록 화면이 될 가능성이 큼)
@@ -25,10 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _navigateToPostDetail() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => PostDetailScreen()));
+  void _navigateToPostDetail(Post post) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => PostDetailScreen(post: post)),
+    );
   }
 
   @override
