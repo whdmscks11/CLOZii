@@ -1,4 +1,5 @@
 import 'package:carrot_login/core/theme/context_extension.dart';
+import 'package:carrot_login/core/utils/number_format.dart';
 import 'package:carrot_login/features/home/models/post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,12 +67,31 @@ class PostListTile extends StatelessWidget {
                             color: Colors.black45,
                           ),
                         ),
-                        Text(
-                          '\u20B1 500.0', //₱
-                          style: context.textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        post.price != null
+                            ? Text(
+                                '\u20B1 ${formatPrice(post.price!)}', //₱
+                                style: context.textTheme.bodyLarge!.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            : Row(
+                                children: [
+                                  Text(
+                                    'SHARES',
+                                    style: context.textTheme.bodyLarge!
+                                        .copyWith(
+                                          color: context.colors.primary,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  Icon(
+                                    Icons.favorite,
+                                    size: 16,
+                                    color: context.colors.primary,
+                                  ),
+                                ],
+                              ),
                         Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
