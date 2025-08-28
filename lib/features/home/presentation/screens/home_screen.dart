@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       /// 앱 바
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         centerTitle: false,
         title: Row(
           mainAxisSize: MainAxisSize.min,
