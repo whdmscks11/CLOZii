@@ -1,3 +1,4 @@
+import 'package:carrot_login/core/data/dummydata.dart';
 import 'package:carrot_login/core/theme/context_extension.dart';
 import 'package:carrot_login/features/home/presentation/widgets/post_list_tile.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,11 +6,14 @@ import 'package:flutter/material.dart';
 
 /// 앱 메인 화면 - 로그인 이후 화면 (게시글 목록 화면이 될 가능성이 큼)
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final posts = dummyPosts;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /// 앱 바
       appBar: AppBar(
         centerTitle: false,
         title: Row(
@@ -29,6 +33,8 @@ class HomeScreen extends StatelessWidget {
         ],
         shape: Border(bottom: BorderSide(color: Colors.black12)),
       ),
+
+      /// 하단 메뉴 - 네비게이션 바
       bottomNavigationBar: BottomNavigationBar(
         // 개 이상이 되면 자동으로 BottomNavigationBarType.shifting 모드로 바뀌는데,
         // 이때 각 아이템에 backgroundColor가 없으면 UI가 깨지거나 사라져 보일 수 있다.
@@ -44,12 +50,17 @@ class HomeScreen extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'My'),
         ],
       ),
+
+      /// 본문 - body widgets
       body: Stack(
         children: [
+          /// 게시글 리스트
           ListView.builder(
-            itemCount: 10,
-            itemBuilder: (context, index) => PostListTile(),
+            itemCount: posts.length,
+            itemBuilder: (context, index) => PostListTile(post: posts[index]),
           ),
+
+          /// Create 버튼
           Positioned(
             bottom: 0,
             right: 0,

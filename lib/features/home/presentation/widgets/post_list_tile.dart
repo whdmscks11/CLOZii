@@ -1,9 +1,34 @@
 import 'package:carrot_login/core/theme/context_extension.dart';
+import 'package:carrot_login/features/home/models/post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PostListTile extends StatelessWidget {
-  const PostListTile({super.key});
+  const PostListTile({super.key, required this.post});
+
+  final Post post;
+
+  String showUploadedTime() {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final diff = now - post.createdAt.millisecondsSinceEpoch;
+    final duration = Duration(milliseconds: diff);
+
+    if (diff < Duration.millisecondsPerMinute) {
+      final s = duration.inSeconds;
+      return '$s sec${s == 1 ? '' : 's'}';
+    }
+    if (diff < Duration.millisecondsPerHour) {
+      final m = duration.inMinutes;
+      return '$m min${m == 1 ? '' : 's'}';
+    }
+    if (diff < Duration.millisecondsPerDay) {
+      final h = duration.inHours;
+      return '$h hr${h == 1 ? '' : 's'}';
+    }
+    // 하루 이상
+    final d = duration.inDays;
+    return '$d day${d == 1 ? '' : 's'}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +46,7 @@ class PostListTile extends StatelessWidget {
                     color: Colors.black26,
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  child: Center(child: Text('Image')),
+                  child: Image.network(post.imageUrls[0], fit: BoxFit.cover),
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
@@ -30,9 +55,9 @@ class PostListTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Post Title', style: context.textTheme.titleSmall),
+                        Text(post.title, style: context.textTheme.titleSmall),
                         Text(
-                          'address · 10mins ago',
+                          'address · ${showUploadedTime()} ago',
                           style: context.textTheme.bodyLarge!.copyWith(
                             color: Colors.black45,
                           ),
