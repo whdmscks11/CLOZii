@@ -1,14 +1,28 @@
 import 'package:carrot_login/core/data/dummydata.dart';
 import 'package:carrot_login/core/theme/context_extension.dart';
+import 'package:carrot_login/features/home/models/post.dart';
 import 'package:carrot_login/features/home/presentation/widgets/post_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// 앱 메인 화면 - 로그인 이후 화면 (게시글 목록 화면이 될 가능성이 큼)
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
-  final posts = dummyPosts;
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<Post> posts = dummyPosts;
+
+  Future<void> _onRefresh() async {
+    // TODO: 실제 API 호출
+    await Future.delayed(const Duration(seconds: 1));
+    setState(() {
+      posts = List<Post>.from(posts)..shuffle(); // 예시로 셔플
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +69,13 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           /// 게시글 리스트
-          ListView.builder(
-            itemCount: posts.length,
-            itemBuilder: (context, index) => PostListTile(post: posts[index]),
+          RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: posts.length,
+              itemBuilder: (context, index) => PostListTile(post: posts[index]),
+            ),
           ),
 
           /// Create 버튼
