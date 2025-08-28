@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:carrot_login/core/utils/animation.dart';
 import 'package:carrot_login/core/utils/loading_overlay.dart';
 import 'package:carrot_login/features/auth/data/auth_type.dart';
-import 'package:carrot_login/features/home/presentation/screens/home_screen.dart';
+import 'package:carrot_login/features/home/presentation/screens/post_list_screen.dart';
 import 'package:carrot_login/features/auth/presentation/screens/signup/select_location_screen.dart';
 import 'package:carrot_login/core/widgets/custom_text_link.dart';
 import 'package:carrot_login/features/auth/presentation/widgets/phone_number_field.dart';

@@ -5,9 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PostListTile extends StatelessWidget {
-  const PostListTile({super.key, required this.post});
+  const PostListTile({super.key, required this.post, required this.onTap});
 
   final Post post;
+  final VoidCallback onTap;
 
   String showUploadedTime() {
     final now = DateTime.now().millisecondsSinceEpoch;
@@ -38,6 +39,7 @@ class PostListTile extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: ListTile(
+            onTap: onTap,
             title: Row(
               children: [
                 Container(
