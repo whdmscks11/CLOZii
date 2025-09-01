@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:carrot_login/core/data/dummydata.dart';
 import 'package:carrot_login/core/widgets/custom_button.dart';
-import 'package:carrot_login/features/auth/presentation/screens/signup/map_tiler_screen.dart';
+import 'package:carrot_login/features/auth/presentation/screens/signup/google_map_screen.dart';
 import 'package:carrot_login/features/auth/presentation/widgets/signup/address_list_tile.dart';
 import 'package:carrot_login/features/auth/presentation/widgets/signup/search_field.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +54,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
   void _showMap() {
     Navigator.of(
       context,
-    ).push(MaterialPageRoute(builder: (context) => MapTilerScreen()));
+    ).push(MaterialPageRoute(builder: (context) => GoogleMapScreen()));
   }
 
   @override

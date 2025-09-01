@@ -8,7 +8,6 @@ plugins {
 android {
     namespace = "com.example.carrot_login"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -29,6 +28,9 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
+
+    // ✅ 여기에 추가
+    ndkVersion = "27.0.12077973"
 
     buildTypes {
         release {
