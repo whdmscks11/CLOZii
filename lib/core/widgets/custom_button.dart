@@ -10,12 +10,16 @@ class CustomButton extends StatelessWidget {
     super.key,
     required this.text, // 버튼에 표시될 텍스트
     required this.onTap, // 버튼 클릭 시 실행할 콜백 함수
-    this.icon, // 버튼 왼쪽에 표시할 아이콘 (선택)
+    this.icon,
+    this.width = double.infinity,
+    this.height = 40.0, // 버튼 왼쪽에 표시할 아이콘 (선택)
   });
 
   final String text;
   final VoidCallback? onTap;
   final IconData? icon;
+  final double width;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +32,8 @@ class CustomButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0), // 버튼 주변 여백
         child: Container(
-          width: double.infinity, // 가로를 최대 너비로 확장
-          height: 40.0, // 버튼 높이
+          width: width, // 가로를 최대 너비로 확장
+          height: height, // 버튼 높이
           decoration: BoxDecoration(
             // 버튼 색상
             color: isButtonEnabled
