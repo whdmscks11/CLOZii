@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class MapTilerScreen extends StatefulWidget {
   const MapTilerScreen({super.key});
@@ -15,6 +17,7 @@ class _MapTilerScreenState extends State<MapTilerScreen>
   final String apiKey = 'AjKFjKJePXd7MBE9Nfke';
 
   bool _awaitingSettings = false; // 설정 화면으로 보냈는지 표시
+  LatLng _selectedPoint = LatLng(14.266843, 121.073063); // 선택된 위치
 
   @override
   void initState() {
@@ -86,35 +89,115 @@ class _MapTilerScreenState extends State<MapTilerScreen>
     );
   }
 
+  Future<String?> _getAddressFromLatLng(double lat, double lon) async {
+    final url = Uri.parse(
+      'https://api.maptiler.com/geocoding/$lon,$lat.json?key=$apiKey',
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final features = data['features'] as List?;
+      if (features != null && features.isNotEmpty) {
+        return features.first['place_name'];
+      }
+    }
+    return null;
+  }
+
+  Widget _buildBottomInfo(String text) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.my_location, size: 32),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(blurRadius: 6, color: Colors.black.withOpacity(0.1)),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("선택된 위치", style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 4),
+                Text(text, style: Theme.of(context).textTheme.bodyMedium),
+                const SizedBox(height: kToolbarHeight),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Map')),
-      body: FlutterMap(
-        options: MapOptions(
-          initialCenter: LatLng(14.266667, 121.073056),
-          initialZoom: 19,
-        ),
+      body: Stack(
         children: [
-          TileLayer(
-            urlTemplate:
-                "https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$apiKey",
-            userAgentPackageName: 'com.example.app',
-          ),
-          MarkerLayer(
-            markers: [
-              Marker(
-                point: LatLng(14.5995, 120.9842),
-                width: 40,
-                height: 40,
-                alignment: Alignment.bottomCenter,
-                child: const Icon(
-                  Icons.location_on,
-                  color: Colors.red,
-                  size: 40,
-                ),
+          FlutterMap(
+            options: MapOptions(initialCenter: _selectedPoint, initialZoom: 19),
+            children: [
+              TileLayer(
+                urlTemplate:
+                    "https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=$apiKey",
+                userAgentPackageName: 'com.example.app',
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: _selectedPoint,
+                    width: 40,
+                    height: 40,
+                    alignment: Alignment.bottomCenter,
+                    child: const Icon(
+                      Icons.location_on,
+                      color: Colors.red,
+                      size: 40,
+                    ),
+                  ),
+                ],
               ),
             ],
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: FutureBuilder(
+              future: _getAddressFromLatLng(
+                _selectedPoint.latitude,
+                _selectedPoint.longitude,
+              ),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return _buildBottomInfo('주소를 불러올 수 없습니다.');
+                }
+                return _buildBottomInfo(snapshot.data ?? '알 수 없는 주소');
+              },
+            ),
           ),
         ],
       ),
