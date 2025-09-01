@@ -11,7 +11,12 @@ class GoogleMapScreen extends StatefulWidget {
 
 class _GoogleMapScreenState extends State<GoogleMapScreen>
     with WidgetsBindingObserver {
+  late final GoogleMapController controller;
   bool _awaitingSettings = false; // 설정 화면으로 보냈는지 표시
+  CameraPosition initialPosition = CameraPosition(
+    target: LatLng(14.2639, 121.07445),
+    zoom: 19,
+  );
 
   @override
   void initState() {
@@ -85,16 +90,62 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
 
   @override
   Widget build(BuildContext context) {
-    CameraPosition initialPosition = CameraPosition(
-      target: LatLng(14.2639, 121.0742),
-      zoom: 19,
-    );
-
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(child: GoogleMap(initialCameraPosition: initialPosition)),
+          GoogleMap(
+            initialCameraPosition: initialPosition,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            onMapCreated: (GoogleMapController controller) {
+              this.controller = controller;
+            },
+            markers: {
+              Marker(
+                markerId: MarkerId('123'),
+                position: LatLng(14.263966, 121.074359),
+              ),
+            },
+          ),
+          DraggableScrollableSheet(
+            initialChildSize: 0.25, // 처음 높이 (화면 비율)
+            minChildSize: 0.1, // 최소 높이
+            maxChildSize: 0.6, // 최대 높이
+            snap: true,
+            snapAnimationDuration: Duration(milliseconds: 200),
+            snapSizes: [0.25, 0.6],
+            builder: (context, controller) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  boxShadow: [BoxShadow(blurRadius: 8, color: Colors.black26)],
+                ),
+                child: ListView(
+                  controller: controller, // 스크롤 컨트롤러 연결
+                  children: [
+                    SizedBox(height: 12),
+                    Center(
+                      child: Container(
+                        width: 80,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    // 모달 안의 내용 넣기
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text("여기에 장소 상세 정보 넣기"),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
