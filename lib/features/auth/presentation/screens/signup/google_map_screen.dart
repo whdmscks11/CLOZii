@@ -26,9 +26,9 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
   String? _selectedName;
   LatLng? tappedLatlng;
 
-  final _client = http.Client(); // 재사용
-  final List<_Poi> _cache = []; // 프리패치 캐시
-  bool _prefetching = false;
+  final _client = http.Client();
+  final List<_Poi> _pois = [];
+  double _zoom = 18; // onCameraMove로 갱신
 
   @override
   void initState() {
@@ -40,6 +40,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this); // ✅ 해제
+    _client.close();
     super.dispose();
   }
 
@@ -100,141 +101,95 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
     );
   }
 
-  double _distMeters(LatLng a, LatLng b) {
-    const R = 6371000.0;
-    final dLat = (b.latitude - a.latitude) * pi / 180;
-    final dLng = (b.longitude - a.longitude) * pi / 180;
-    final la1 = a.latitude * pi / 180;
-    final la2 = b.latitude * pi / 180;
-    final h =
-        sin(dLat / 2) * sin(dLat / 2) +
-        sin(dLng / 2) * sin(dLng / 2) * cos(la1) * cos(la2);
-    return 2 * R * asin(sqrt(h));
-  }
+  Future<void> _prefetchPois() async {
+    if (_zoom < 15) {
+      _pois.clear();
+      setState(() {});
+      return;
+    } // 멀리선 라벨 안 보이게
 
-  Future<void> _prefetchVisiblePois() async {
-    if (_prefetching) return;
-    _prefetching = true;
-    try {
-      final bounds = await controller.getVisibleRegion();
-      final center = LatLng(
-        (bounds.northeast.latitude + bounds.southwest.latitude) / 2,
-        (bounds.northeast.longitude + bounds.southwest.longitude) / 2,
-      );
-      // 대각선 길이의 절반 정도를 반경으로 추정
-      final cornerA = bounds.northeast;
-      final cornerB = bounds.southwest;
-      final approxRadius = (_distMeters(cornerA, cornerB) / 2)
-          .clamp(30, 120)
-          .toInt();
+    final bounds = await controller.getVisibleRegion();
+    final center = LatLng(
+      (bounds.northeast.latitude + bounds.southwest.latitude) / 2,
+      (bounds.northeast.longitude + bounds.southwest.longitude) / 2,
+    );
 
-      final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-        '?location=${center.latitude},${center.longitude}'
-        '&radius=$approxRadius'
-        '&key=$_apiKey',
-      );
+    // 줌에 따라 반경/개수 조절 (라벨 밀도 흉내)
+    final radius = _zoom >= 18
+        ? 80
+        : _zoom >= 16
+        ? 200
+        : 400;
 
-      final res = await _client.get(url);
-      if (res.statusCode != 200) return;
+    final url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+      '?location=${center.latitude},${center.longitude}'
+      '&radius=$radius'
+      '&key=$_apiKey',
+    );
+    final res = await _client.get(url);
+    if (res.statusCode != 200) return;
 
-      final data = json.decode(res.body) as Map<String, dynamic>;
-      final results = (data['results'] as List?) ?? const [];
-
-      // 캐시에 병합(중복 제거)
-      final existing = _cache.map((e) => e.id).toSet();
-      for (final r in results) {
-        final loc = r['geometry']?['location'];
-        if (loc is! Map) continue;
-        final id = r['place_id'] as String?;
-        final name = r['name'] as String?;
-        if (id == null || name == null) continue;
-        if (existing.contains(id)) continue;
-        _cache.add(
-          _Poi(
-            id,
-            name,
+    final data = json.decode(res.body) as Map<String, dynamic>;
+    final results = (data['results'] as List?) ?? const [];
+    _pois
+      ..clear()
+      ..addAll(
+        results.map((r) {
+          final loc = r['geometry']['location'];
+          return _Poi(
+            r['place_id'],
+            r['name'],
             LatLng(
               (loc['lat'] as num).toDouble(),
               (loc['lng'] as num).toDouble(),
             ),
-          ),
-        );
-      }
-      // 필요시 LRU처럼 너무 커지면 잘라내기
-      if (_cache.length > 300) _cache.removeRange(0, _cache.length - 300);
-    } finally {
-      _prefetching = false;
-    }
+          );
+        }),
+      );
+    setState(() {});
   }
 
-  // 탭 시: 캐시에서 즉시 스냅 → 없으면 폴백 호출
-  Future<String?> _snapPoiName(
-    LatLng tap, {
-    double acceptWithin = 60,
-    int fallbackRadius = 50,
-  }) async {
-    // 1) 캐시에서 즉시 찾기
-    final nearest = _cache.isEmpty
-        ? null
-        : _cache.reduce((a, b) {
-            final da = _distMeters(tap, a.pos);
-            final db = _distMeters(tap, b.pos);
-            return da < db ? a : b;
-          });
+  // 라벨이 화면에 보이고, 탭 지점이 라벨 근처일 때만 이름 반환
+  Future<String?> _hitTestPoiName(LatLng tap) async {
+    // 줌이 낮으면 라벨 자체가 안 보인다고 가정
+    if (_zoom < 15) return null;
 
-    if (nearest != null && _distMeters(tap, nearest.pos) <= acceptWithin) {
-      return nearest.name;
-    }
+    // 탭 지점을 화면(px) 좌표로
+    final scTap = await controller.getScreenCoordinate(tap);
 
-    // 2) 너무 멀거나 캐시 미스면 한 번만 호출
-    final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-      '?location=${tap.latitude},${tap.longitude}'
-      '&radius=$fallbackRadius'
-      '&key=$_apiKey',
-    );
-    final res = await _client.get(url);
-    if (res.statusCode != 200) return null;
+    // 현재 화면에 보이는 영역(뷰포트)만 검사
+    final bounds = await controller.getVisibleRegion();
 
-    final data = json.decode(res.body) as Map<String, dynamic>;
-    final results = (data['results'] as List?) ?? const [];
-    if (results.isEmpty) return null;
+    // 라벨 히트 반경(px) — 줌이 높을수록 조금 넉넉하게
+    final hitPx = _zoom >= 18 ? 28 : 22;
 
-    // 가장 가까운 1개
-    Map<String, dynamic>? best;
-    double bestDist = double.infinity;
-    for (final r in results) {
-      final loc = r['geometry']?['location'];
-      if (loc is! Map) continue;
-      final p = LatLng(
-        (loc['lat'] as num).toDouble(),
-        (loc['lng'] as num).toDouble(),
-      );
-      final d = _distMeters(tap, p);
-      if (d < bestDist) {
-        bestDist = d;
-        best = r as Map<String, dynamic>;
+    _Poi? hit;
+    double best = double.infinity;
+
+    for (final poi in _pois) {
+      // 뷰포트 밖이면 스킵
+      final p = poi.pos;
+      if (p.latitude > bounds.northeast.latitude ||
+          p.latitude < bounds.southwest.latitude ||
+          p.longitude > bounds.northeast.longitude ||
+          p.longitude < bounds.southwest.longitude) {
+        continue;
+      }
+
+      // POI 위치를 화면(px) 좌표로 바꿔서 탭과의 픽셀 거리 확인
+      final scPoi = await controller.getScreenCoordinate(poi.pos);
+      final dx = (scPoi.x - scTap.x).toDouble();
+      final dy = (scPoi.y - scTap.y).toDouble();
+      final d = sqrt(dx * dx + dy * dy);
+
+      if (d < hitPx && d < best) {
+        best = d;
+        hit = poi;
       }
     }
-    if (best == null || bestDist > acceptWithin) return null;
 
-    // 캐시에 넣어두기(다음엔 더 빠르게)
-    final id = best['place_id'] as String?;
-    final name = best['name'] as String?;
-    if (id != null && name != null) {
-      _cache.add(
-        _Poi(
-          id,
-          name,
-          LatLng(
-            (best['geometry']['location']['lat'] as num).toDouble(),
-            (best['geometry']['location']['lng'] as num).toDouble(),
-          ),
-        ),
-      );
-    }
-    return name;
+    return hit?.name; // 없으면 null → 라벨 미탭으로 간주
   }
 
   @override
@@ -245,26 +200,23 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
         children: [
           GoogleMap(
             initialCameraPosition: initialPosition,
-            onCameraIdle: _prefetchVisiblePois,
+            onMapCreated: (c) {
+              controller = c;
+              _prefetchPois();
+            },
+            onCameraMove: (cp) => _zoom = cp.zoom,
+            onCameraIdle: _prefetchPois,
             onTap: (latLng) async {
-              // 탭 시 라벨이 있으면 이름 획득
-              final name = await _snapPoiName(latLng);
+              final name = await _hitTestPoiName(latLng); // 라벨 탭일 때만 이름 나옴
               if (!mounted) return;
               setState(() {
-                _selectedName = name;
-                tappedLatlng = LatLng(latLng.latitude, latLng.longitude);
-                controller.animateCamera(
-                  CameraUpdate.newLatLng(
-                    LatLng(latLng.latitude, latLng.longitude),
-                  ),
-                );
-              }); // null이면 라벨 없음으로 간주
+                tappedLatlng = latLng;
+                _selectedName = name; // null이면 모달에 아무 것도 안 보여줌(또는 이전값 제거)
+                controller.animateCamera(CameraUpdate.newLatLng(latLng));
+              });
             },
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
-            onMapCreated: (GoogleMapController controller) {
-              this.controller = controller;
-            },
             markers: {
               if (tappedLatlng != null)
                 Marker(markerId: MarkerId('123'), position: tappedLatlng!),
@@ -322,47 +274,3 @@ class _Poi {
   final LatLng pos;
   _Poi(this.id, this.name, this.pos);
 }
-
-// /// 탭 좌표 주변 라벨(POI)을 찾아 가장 가까운 1개 반환 (없으면 null)
-  // Future<String?> _findNearestPoiName(
-  //   LatLng tap, {
-  //   int radius = 60,
-  //   double acceptWithin = 65,
-  // }) async {
-  //   final url = Uri.parse(
-  //     'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-  //     '?location=${tap.latitude},${tap.longitude}'
-  //     '&radius=$radius' // 반경은 상황에 맞게 30~80m
-  //     '&key=$_apiKey',
-  //   );
-
-  //   final res = await http.get(url);
-  //   if (res.statusCode != 200) return null;
-
-  //   final data = json.decode(res.body) as Map<String, dynamic>;
-  //   final results = (data['results'] as List?) ?? const [];
-
-  //   if (results.isEmpty) return null;
-
-  //   Map<String, dynamic>? best;
-  //   double bestDist = double.infinity;
-
-  //   for (final raw in results) {
-  //     final loc = raw['geometry']?['location'];
-  //     if (loc is Map) {
-  //       final p = LatLng(
-  //         (loc['lat'] as num).toDouble(),
-  //         (loc['lng'] as num).toDouble(),
-  //       );
-  //       final d = _distMeters(tap, p);
-  //       if (d < bestDist) {
-  //         bestDist = d;
-  //         best = raw as Map<String, dynamic>;
-  //       }
-  //     }
-  //   }
-
-  //   if (best == null || bestDist > acceptWithin) return null; // 너무 멀면 무시
-
-  //   return best['name'] as String?;
-  // }
