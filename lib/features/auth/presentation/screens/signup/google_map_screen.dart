@@ -206,6 +206,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
             },
             onCameraMove: (cp) => _zoom = cp.zoom,
             onCameraIdle: _prefetchPois,
+            onPoiClick: (argument) {
+              print(argument);
+              print(argument.name);
+            },
             onTap: (latLng) async {
               final name = await _hitTestPoiName(latLng); // 라벨 탭일 때만 이름 나옴
               if (!mounted) return;
