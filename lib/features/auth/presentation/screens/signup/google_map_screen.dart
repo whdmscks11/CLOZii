@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/features/auth/presentation/widgets/signup/draggable_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,16 +18,36 @@ class GoogleMapScreen extends StatefulWidget {
 class _GoogleMapScreenState extends State<GoogleMapScreen>
     with WidgetsBindingObserver {
   late final GoogleMapController controller;
+
+  final _client = http.Client();
+  final _sheetKey = GlobalKey<DraggableSheetState>();
+
   bool _awaitingSettings = false; // 설정 화면으로 보냈는지 표시
+
+  bool _programmaticMove = false;
+  DateTime? _progStamp;
+  static const _progTimeout = Duration(milliseconds: 800);
+
+  String? _selectedName;
+  LatLng? _tappedLatlng;
+
   CameraPosition initialPosition = CameraPosition(
     target: LatLng(14.2639, 121.07445),
     zoom: 19,
   );
 
-  String? _selectedName;
-  LatLng? _tappedLatlng;
+  bool get _programmaticNow =>
+      _programmaticMove &&
+      _progStamp != null &&
+      DateTime.now().difference(_progStamp!) < _progTimeout;
 
-  final _client = http.Client();
+  Future<void> _goTo(LatLng target) async {
+    LatLng newTarget = LatLng(target.latitude - 0.0003, target.longitude);
+
+    _programmaticMove = true;
+    _progStamp = DateTime.now();
+    await controller.animateCamera(CameraUpdate.newLatLng(newTarget));
+  }
 
   Future<void> getPlaceInfo(LatLng latlng, String placeId) async {
     final url = Uri.parse(
@@ -132,14 +152,25 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
             onMapCreated: (c) {
               controller = c;
             },
-            onPoiClick: (argument) {
-              getPlaceInfo(argument.location, argument.placeId);
+            onPoiClick: (poi) {
+              getPlaceInfo(poi.location, poi.placeId);
               setState(() {
-                _tappedLatlng = argument.location;
-                controller.animateCamera(
-                  CameraUpdate.newLatLng(argument.location),
-                );
+                _tappedLatlng = poi.location;
               });
+              _goTo(poi.location);
+              _sheetKey.currentState?.expandToMid();
+            },
+            onCameraIdle: () {
+              _programmaticMove = false;
+            },
+            onCameraMoveStarted: () {
+              if (!_programmaticNow) {
+                _sheetKey.currentState?.collapse(); // ← 접기
+              }
+            },
+            onTap: (_) {
+              // 일반 맵 탭 → 선택 해제/시트 접기 등
+              _sheetKey.currentState?.collapse();
             },
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
@@ -148,49 +179,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
                 Marker(markerId: MarkerId('123'), position: _tappedLatlng!),
             },
           ),
-          DraggableScrollableSheet(
-            initialChildSize: 0.25, // 처음 높이 (화면 비율)
-            minChildSize: 0.1, // 최소 높이
-            maxChildSize: 0.6, // 최대 높이
-            snap: true,
-            snapAnimationDuration: Duration(milliseconds: 200),
-            snapSizes: [0.25, 0.6],
-            builder: (context, controller) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                  boxShadow: [BoxShadow(blurRadius: 8, color: Colors.black26)],
-                ),
-                child: ListView(
-                  controller: controller, // 스크롤 컨트롤러 연결
-                  children: [
-                    SizedBox(height: 12),
-                    Center(
-                      child: Container(
-                        width: 80,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[400],
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
-                    // 모달 안의 내용 넣기
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: _selectedName != null
-                          ? Text(
-                              _selectedName!,
-                              style: context.textTheme.titleLarge,
-                            )
-                          : Text(''),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+          DraggableSheet(key: _sheetKey, selectedName: _selectedName),
         ],
       ),
     );
