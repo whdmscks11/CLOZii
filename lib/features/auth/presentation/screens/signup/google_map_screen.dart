@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+
+const _apiKey = 'AIzaSyDgrIuXiYkGyUyVaukA7mXwCvPUaE--uFM'; // ← 본인 키
 
 class GoogleMapScreen extends StatefulWidget {
   const GoogleMapScreen({super.key});
@@ -23,6 +28,27 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
   LatLng? _tappedLatlng;
 
   final _client = http.Client();
+
+  Future<void> getPlaceInfo(LatLng latlng, String placeId) async {
+    final url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+      '?location=${latlng.latitude},${latlng.longitude}'
+      '&radius=${10}'
+      '&key=$_apiKey',
+    );
+    final res = await _client.get(url);
+    if (res.statusCode != 200) return;
+
+    final result = json.decode(res.body) as Map<String, dynamic>;
+
+    for (final data in result['results']) {
+      if (data['place_id'] == placeId) {
+        setState(() {
+          _selectedName = data['name'];
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -107,9 +133,9 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
               controller = c;
             },
             onPoiClick: (argument) {
+              getPlaceInfo(argument.location, argument.placeId);
               setState(() {
                 _tappedLatlng = argument.location;
-                _selectedName = argument.name;
                 controller.animateCamera(
                   CameraUpdate.newLatLng(argument.location),
                 );
@@ -154,8 +180,11 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: _selectedName != null
-                          ? Text(_selectedName!)
-                          : Text('data'),
+                          ? Text(
+                              _selectedName!,
+                              style: context.textTheme.titleLarge,
+                            )
+                          : Text(''),
                     ),
                   ],
                 ),
