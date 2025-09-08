@@ -31,6 +31,8 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
   String? _selectedName;
   LatLng? _tappedLatlng;
 
+  int markerId = 0;
+
   CameraPosition initialPosition = CameraPosition(
     target: LatLng(14.2639, 121.07445),
     zoom: 19,
@@ -151,6 +153,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
             onPoiClick: (poi) {
               getPlaceInfo(poi.placeId);
               setState(() {
+                markerId++;
                 _tappedLatlng = poi.location;
               });
               _goTo(poi.location);
@@ -172,7 +175,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
             myLocationButtonEnabled: false,
             markers: {
               if (_tappedLatlng != null)
-                Marker(markerId: MarkerId('123'), position: _tappedLatlng!),
+                Marker(
+                  markerId: MarkerId('marker_$markerId'),
+                  position: _tappedLatlng!,
+                ),
             },
           ),
           DraggableSheet(key: _sheetKey, selectedName: _selectedName),
