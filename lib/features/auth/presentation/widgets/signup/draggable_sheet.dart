@@ -18,12 +18,6 @@ class DraggableSheetState extends State<DraggableSheet> {
   final double midSize = 0.5;
   final double maxSize = 0.9;
 
-  // @override
-  // void didUpdateWidget(covariant DraggableSheet oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   // if (oldWidget.selectedName != widget.selectedName) resizeSheet();
-  // }
-
   void collapse() {
     if (sheetController.isAttached) {
       sheetController.animateTo(

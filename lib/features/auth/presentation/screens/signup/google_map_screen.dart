@@ -49,25 +49,21 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
     await controller.animateCamera(CameraUpdate.newLatLng(newTarget));
   }
 
-  Future<void> getPlaceInfo(LatLng latlng, String placeId) async {
+  Future<void> getPlaceInfo(String placeId) async {
     final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-      '?location=${latlng.latitude},${latlng.longitude}'
-      '&radius=${10}'
+      'https://maps.googleapis.com/maps/api/place/details/json'
+      '?place_id=$placeId'
       '&key=$_apiKey',
     );
     final res = await _client.get(url);
     if (res.statusCode != 200) return;
 
     final result = json.decode(res.body) as Map<String, dynamic>;
+    final placeDetails = result['result'];
 
-    for (final data in result['results']) {
-      if (data['place_id'] == placeId) {
-        setState(() {
-          _selectedName = data['name'];
-        });
-      }
-    }
+    setState(() {
+      _selectedName = placeDetails['name'];
+    });
   }
 
   @override
@@ -153,7 +149,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
               controller = c;
             },
             onPoiClick: (poi) {
-              getPlaceInfo(poi.location, poi.placeId);
+              getPlaceInfo(poi.placeId);
               setState(() {
                 _tappedLatlng = poi.location;
               });
