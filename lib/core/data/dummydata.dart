@@ -1,5 +1,5 @@
 // 더미 주소
-import 'package:carrot_login/features/home/models/post.dart';
+import 'package:clozii/features/home/models/post.dart';
 
 List<String> dummyAddress = [
   'Laguna, Biñan City, Barangay San Antonio',

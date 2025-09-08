@@ -1,4 +1,4 @@
-package com.example.carrot_login
+package com.clozii
 
 import io.flutter.embedding.android.FlutterActivity
 

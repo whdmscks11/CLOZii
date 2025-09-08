@@ -1,10 +1,10 @@
-import 'package:carrot_login/core/theme/context_extension.dart';
-import 'package:carrot_login/core/utils/number_format.dart';
-import 'package:carrot_login/core/utils/uploaded_time.dart';
-import 'package:carrot_login/core/widgets/custom_button.dart';
-import 'package:carrot_login/core/widgets/custom_text_link.dart';
-import 'package:carrot_login/features/home/models/post.dart';
-import 'package:carrot_login/features/home/presentation/widgets/chat_field.dart';
+import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/number_format.dart';
+import 'package:clozii/core/utils/uploaded_time.dart';
+import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/core/widgets/custom_text_link.dart';
+import 'package:clozii/features/home/models/post.dart';
+import 'package:clozii/features/home/presentation/widgets/chat_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

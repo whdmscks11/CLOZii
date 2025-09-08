@@ -1,4 +1,4 @@
-import 'package:carrot_login/core/theme/context_extension.dart';
+import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
 
 OverlayEntry showLoadingOverlay(BuildContext context, {bool dim = true}) {

@@ -1,8 +1,8 @@
-import 'package:carrot_login/core/data/dummydata.dart';
-import 'package:carrot_login/core/theme/context_extension.dart';
-import 'package:carrot_login/features/home/models/post.dart';
-import 'package:carrot_login/features/home/presentation/screens/post_detail_screen.dart';
-import 'package:carrot_login/features/home/presentation/widgets/post_list_tile.dart';
+import 'package:clozii/core/data/dummydata.dart';
+import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/features/home/models/post.dart';
+import 'package:clozii/features/home/presentation/screens/post_detail_screen.dart';
+import 'package:clozii/features/home/presentation/widgets/post_list_tile.dart';
 import 'package:flutter/material.dart';
 
 /// 앱 메인 화면 - 로그인 이후 화면 (게시글 목록 화면이 될 가능성이 큼)

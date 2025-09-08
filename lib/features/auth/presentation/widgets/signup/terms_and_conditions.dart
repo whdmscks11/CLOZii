@@ -1,8 +1,8 @@
-import 'package:carrot_login/core/theme/context_extension.dart';
-import 'package:carrot_login/core/utils/animation.dart';
-import 'package:carrot_login/core/utils/loading_overlay.dart';
-import 'package:carrot_login/core/widgets/custom_button.dart';
-import 'package:carrot_login/features/home/presentation/screens/post_list_screen.dart';
+import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/animation.dart';
+import 'package:clozii/core/utils/loading_overlay.dart';
+import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/home/presentation/screens/post_list_screen.dart';
 import 'package:flutter/material.dart';
 
 enum Age { youth, adult }

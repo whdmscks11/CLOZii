@@ -1,4 +1,4 @@
-import 'package:carrot_login/core/theme/color_schemes.dart';
+import 'package:clozii/core/theme/color_schemes.dart';
 import 'package:flutter/material.dart';
 
 const brandColor = Color(0xFFFF8585);

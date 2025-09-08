@@ -1,5 +1,5 @@
-import 'package:carrot_login/core/theme/theme.dart';
-import 'package:carrot_login/features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'package:clozii/core/theme/theme.dart';
+import 'package:clozii/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
 /// 앱 진입점(main 함수)

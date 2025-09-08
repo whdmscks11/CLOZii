@@ -1,7 +1,7 @@
-import 'package:carrot_login/core/widgets/custom_button.dart';
-import 'package:carrot_login/features/auth/presentation/screens/auth_screen.dart';
-import 'package:carrot_login/features/auth/data/auth_type.dart';
-import 'package:carrot_login/core/widgets/custom_text_link.dart';
+import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
+import 'package:clozii/features/auth/data/auth_type.dart';
+import 'package:clozii/core/widgets/custom_text_link.dart';
 import 'package:flutter/material.dart';
 
 /// 홈 화면 (앱 시작 시 표시되는 첫 화면)

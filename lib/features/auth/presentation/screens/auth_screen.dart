@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:carrot_login/core/utils/animation.dart';
-import 'package:carrot_login/core/utils/loading_overlay.dart';
-import 'package:carrot_login/features/auth/data/auth_type.dart';
-import 'package:carrot_login/features/home/presentation/screens/post_list_screen.dart';
-import 'package:carrot_login/features/auth/presentation/screens/signup/select_location_screen.dart';
-import 'package:carrot_login/core/widgets/custom_text_link.dart';
-import 'package:carrot_login/features/auth/presentation/widgets/phone_number_field.dart';
-import 'package:carrot_login/features/auth/presentation/widgets/verification_field.dart';
+import 'package:clozii/core/utils/animation.dart';
+import 'package:clozii/core/utils/loading_overlay.dart';
+import 'package:clozii/features/auth/data/auth_type.dart';
+import 'package:clozii/features/home/presentation/screens/post_list_screen.dart';
+import 'package:clozii/features/auth/presentation/screens/signup/select_location_screen.dart';
+import 'package:clozii/core/widgets/custom_text_link.dart';
+import 'package:clozii/features/auth/presentation/widgets/phone_number_field.dart';
+import 'package:clozii/features/auth/presentation/widgets/verification_field.dart';
 import 'package:flutter/material.dart';
-import 'package:carrot_login/core/theme/context_extension.dart';
+import 'package:clozii/core/theme/context_extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// AuthScreen

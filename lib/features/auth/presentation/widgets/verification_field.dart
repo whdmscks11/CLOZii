@@ -1,5 +1,5 @@
-import 'package:carrot_login/core/widgets/custom_button.dart';
-import 'package:carrot_login/features/auth/presentation/widgets/verification_timer.dart';
+import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/auth/presentation/widgets/verification_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
