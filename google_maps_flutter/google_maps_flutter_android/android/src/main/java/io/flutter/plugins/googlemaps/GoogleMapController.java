@@ -390,24 +390,47 @@ class GoogleMapController
 
   @Override
 public void onPoiClick(@NonNull PointOfInterest poi) {
-  if (methodChannel == null) return; // 안전장치 (보통 null 아님)
+  // if (methodChannel == null) return; // 안전장치 (보통 null 아님)
 
-  final int mapId = this.id;
+  // final int mapId = this.id;
 
-  final Map<String, Object> position = new HashMap<>();
-  position.put("latitude", poi.latLng.latitude);
-  position.put("longitude", poi.latLng.longitude);
+  // final Map<String, Object> position = new HashMap<>();
+  // position.put("latitude", poi.latLng.latitude);
+  // position.put("longitude", poi.latLng.longitude);
 
-  final Map<String, Object> poiMap = new HashMap<>();
-  poiMap.put("placeId", poi.placeId);
-  poiMap.put("name", poi.name);
-  poiMap.put("position", position);
+  // final Map<String, Object> poiMap = new HashMap<>();
+  // poiMap.put("placeId", poi.placeId);
+  // poiMap.put("name", poi.name);
+  // poiMap.put("position", position);
 
-  final Map<String, Object> args = new HashMap<>();
-  args.put("mapId", mapId);
-  args.put("poi", poiMap);
+  // final Map<String, Object> args = new HashMap<>();
+  // args.put("mapId", mapId);
+  // args.put("poi", poiMap);
 
-  methodChannel.invokeMethod("poi#tap", args);
+  // methodChannel.invokeMethod("poi#tap", args);
+  Messages.PlatformLatLng latLng = new Messages.PlatformLatLng.Builder()
+      .setLatitude(poi.latLng.latitude)
+      .setLongitude(poi.latLng.longitude)
+      .build();
+
+  Messages.PlatformPoi platformPoi = new Messages.PlatformPoi.Builder()
+      .setPlaceId(poi.placeId)
+      .setName(poi.name)
+      .setPosition(latLng)
+      .build();
+
+  flutterApi.onPoiTap(platformPoi, new Messages.VoidResult() {
+    @Override
+    public void success() {
+      // no-op
+    }
+
+    @Override
+    public void error(Throwable error) {
+      // 필요하면 로그
+      // Log.e("GoogleMapController", "onPoiTap callback error", error);
+    }
+  });
 }
 
   @Override
