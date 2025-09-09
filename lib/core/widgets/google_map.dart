@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/core/utils/clean_address.dart';
+import 'package:clozii/core/widgets/draggable_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -21,41 +20,52 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
   late final GoogleMapController controller;
 
   final _client = http.Client();
+  final _sheetKey = GlobalKey<DraggableSheetState>();
 
   bool _awaitingSettings = false; // 설정 화면으로 보냈는지 표시
-  LatLng? _center;
-  String? _selectedCity;
+
+  bool _programmaticMove = false;
+  DateTime? _progStamp;
+  static const _progTimeout = Duration(milliseconds: 800);
+
+  String? _selectedName;
+  LatLng? _tappedLatlng;
+
+  int markerId = 0;
 
   CameraPosition initialPosition = CameraPosition(
     target: LatLng(14.2639, 121.07445),
-    zoom: 14,
+    zoom: 19,
   );
 
-  Future<void> getPlaceInfo(LatLng target) async {
+  bool get _programmaticNow =>
+      _programmaticMove &&
+      _progStamp != null &&
+      DateTime.now().difference(_progStamp!) < _progTimeout;
+
+  Future<void> _goTo(LatLng target) async {
+    LatLng newTarget = LatLng(target.latitude - 0.0003, target.longitude);
+
+    _programmaticMove = true;
+    _progStamp = DateTime.now();
+    await controller.animateCamera(CameraUpdate.newLatLng(newTarget));
+  }
+
+  Future<void> getPlaceInfo(String placeId) async {
     final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/geocode/json'
-      '?latlng=${target.latitude},${target.longitude}'
+      'https://maps.googleapis.com/maps/api/place/details/json'
+      '?place_id=$placeId'
       '&key=$_apiKey',
     );
     final res = await _client.get(url);
     if (res.statusCode != 200) return;
 
-    final result = json.decode(res.body) as Map<dynamic, dynamic>;
+    final result = json.decode(res.body) as Map<String, dynamic>;
+    final placeDetails = result['result'];
 
-    for (final r in result['results']) {
-      // final types = r['address_components']['types'] as List;
-      for (final component in r['address_components']) {
-        final types = component['types'] as List;
-        if (types.contains('locality')) {
-          final rawCityName = component['short_name'] as String;
-          final cityName = cleanCityName(rawCityName);
-          print(cityName);
-          setState(() {
-            _selectedCity = cityName;
-          });
-        }
-      }
-    }
+    setState(() {
+      _selectedName = placeDetails['name'];
+    });
   }
 
   @override
@@ -140,32 +150,38 @@ class _GoogleMapScreenState extends State<GoogleMapScreen>
             onMapCreated: (c) {
               controller = c;
             },
-            onCameraMove: (position) {
+            onPoiClick: (poi) {
+              getPlaceInfo(poi.placeId);
               setState(() {
-                _center = position.target;
+                markerId++;
+                _tappedLatlng = poi.location;
               });
+              _goTo(poi.location);
+              _sheetKey.currentState?.expandToMid();
             },
             onCameraIdle: () {
-              if (_center != null) {
-                getPlaceInfo(_center!);
+              _programmaticMove = false;
+            },
+            onCameraMoveStarted: () {
+              if (!_programmaticNow) {
+                _sheetKey.currentState?.collapse(); // ← 접기
               }
+            },
+            onTap: (_) {
+              // 일반 맵 탭 → 선택 해제/시트 접기 등
+              _sheetKey.currentState?.collapse();
             },
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
-          ),
-          Center(
-            child: IgnorePointer(
-              ignoring: true,
-              child: Transform.translate(
-                offset: const Offset(0, -12), // 살짝 위/아래로 조정 가능
-                child: Icon(
-                  Icons.place,
-                  size: 60,
-                  color: context.colors.primary,
+            markers: {
+              if (_tappedLatlng != null)
+                Marker(
+                  markerId: MarkerId('marker_$markerId'),
+                  position: _tappedLatlng!,
                 ),
-              ),
-            ),
+            },
           ),
+          DraggableSheet(key: _sheetKey, selectedName: _selectedName),
         ],
       ),
     );
