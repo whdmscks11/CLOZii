@@ -27,7 +27,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     super.initState();
     _controller.addListener(() {
       setState(() {
-        _isExpanded = _controller.offset < (250 - kToolbarHeight);
+        _isExpanded = _controller.offset < (300 - kToolbarHeight);
       });
     });
   }
@@ -62,6 +62,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         controller: _controller,
         slivers: [
           SliverAppBar(
+            backgroundColor: Colors.white,
             surfaceTintColor: Colors.transparent,
             stretch: true,
             pinned: true,
@@ -72,11 +73,29 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 ? context.colors.onPrimary
                 : Colors.black,
             expandedHeight: MediaQuery.of(context).size.height * 0.45,
+
             flexibleSpace: FlexibleSpaceBar(
               expandedTitleScale: 1.0,
               collapseMode: CollapseMode.pin,
-              // background: Stack(
-              title: Stack(
+              title: Align(
+                alignment: Alignment.topCenter,
+                child: Builder(
+                  builder: (context) => Container(
+                    height: MediaQuery.of(context).padding.top + kToolbarHeight,
+                    decoration: BoxDecoration(
+                      gradient: _isExpanded
+                          ? LinearGradient(
+                              colors: [Colors.black38, Colors.transparent],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            )
+                          : null,
+                      color: !_isExpanded ? Colors.white : null,
+                    ),
+                  ),
+                ),
+              ),
+              background: Stack(
                 children: [
                   PageView(
                     children: [
@@ -84,25 +103,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         (url) => Image.network(url, fit: BoxFit.cover),
                       ),
                     ],
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Builder(
-                      builder: (context) => Container(
-                        height:
-                            MediaQuery.of(context).padding.top + kToolbarHeight,
-                        decoration: BoxDecoration(
-                          gradient: _isExpanded
-                              ? LinearGradient(
-                                  colors: [Colors.black38, Colors.transparent],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                )
-                              : null,
-                          color: !_isExpanded ? Colors.white : null,
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
