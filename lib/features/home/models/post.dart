@@ -28,7 +28,8 @@ class Post {
     required this.createdAt,
     required this.updatedAt,
     required this.tradeType,
-  });
+  }) : favorites = 0,
+       views = 0;
 
   final String id;
   final String title;
@@ -38,6 +39,9 @@ class Post {
   final DateTime createdAt;
   final DateTime updatedAt;
   final TradeType tradeType;
+
+  int favorites;
+  int views;
 
   Post copyWith({
     String? id,
@@ -60,4 +64,7 @@ class Post {
       tradeType: tradeType ?? this.tradeType,
     );
   }
+
+  void incrementFavorites() => favorites++;
+  void incrementViews() => views++;
 }
