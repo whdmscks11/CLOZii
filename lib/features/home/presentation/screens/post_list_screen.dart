@@ -2,7 +2,6 @@ import 'package:clozii/core/data/dummydata.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/features/home/models/post.dart';
 import 'package:clozii/features/home/presentation/screens/post_detail_screen.dart';
-import 'package:clozii/features/home/presentation/screens/post_details_screen.dart';
 import 'package:clozii/features/home/presentation/widgets/post_list_tile.dart';
 import 'package:flutter/material.dart';
 
