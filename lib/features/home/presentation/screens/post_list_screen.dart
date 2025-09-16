@@ -16,18 +16,21 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Post> _posts = dummyPosts;
 
+  // 새로고침
+  // RefreshIndicator와 연결되어 pull-to-refresh 시 호출됨
   Future<void> _onRefresh() async {
-    // TODO: 실제 API 호출
+    // TODO: 실제 API 호출 - 게시글 목록 조회
     await Future.delayed(const Duration(seconds: 1));
     setState(() {
-      _posts = List<Post>.from(_posts)..shuffle(); // 예시로 셔플
+      _posts = List<Post>.from(_posts)
+        ..shuffle(); // 예시로 더미 데이터를 셔플해서 마치 새로 불러온 것처럼 보이게 함
     });
   }
 
+  // 게시글 상세 화면으로 이동
   void _navigateToPostDetail(Post post) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => PostDetailScreen(post: post)),
-      // MaterialPageRoute(builder: (context) => PostDetailsScreen(post: post)),
     );
   }
 
@@ -36,13 +39,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       /// 앱 바
       appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent, // Material 3에서 생기는 표면 색상 제거
         centerTitle: false,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Address'),
-            IconButton(onPressed: () {}, icon: Icon(Icons.expand_more)),
+            Text('Address'), // 현재 주소 표시
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.expand_more),
+            ), // 주소 선택 버튼
           ],
         ),
         actions: [
@@ -58,9 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
       /// 하단 메뉴 - 네비게이션 바
       bottomNavigationBar: BottomNavigationBar(
-        // 개 이상이 되면 자동으로 BottomNavigationBarType.shifting 모드로 바뀌는데,
+        // 5개 이상이 되면 자동으로 BottomNavigationBarType.shifting 모드로 바뀌는데,
         // 이때 각 아이템에 backgroundColor가 없으면 UI가 깨지거나 사라져 보일 수 있다.
-        // 아래 코드를 작성하면 4-5개까지는 문제 없이 보임
+        // 아래 코드를 작성하면 4개까지는 문제 없이 보임
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -78,18 +84,18 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           /// 게시글 리스트
           RefreshIndicator(
-            onRefresh: _onRefresh,
+            onRefresh: _onRefresh, // 새로고침 함수 연결
             child: ListView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(), // 리스트가 비어도 스크롤 가능
               itemCount: _posts.length,
               itemBuilder: (context, index) => PostListTile(
                 post: _posts[index],
-                onTap: _navigateToPostDetail,
+                onTap: _navigateToPostDetail, // 게시글 클릭 시 상세 페이지 이동
               ),
             ),
           ),
 
-          /// Create 버튼
+          /// 오른쪽 하단 Create 버튼
           Positioned(
             bottom: 0,
             right: 0,
@@ -101,10 +107,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 clipBehavior: Clip.hardEdge,
                 child: InkWell(
                   onTap: () {},
-                  splashFactory: NoSplash.splashFactory,
+                  splashFactory: NoSplash.splashFactory, // 버튼 클릭 시 잉크 효과 제거
                   overlayColor: WidgetStateProperty.resolveWith((states) {
                     if (states.contains(WidgetState.pressed)) {
-                      return Colors.white24;
+                      return Colors.white24; // 눌렀을 때 살짝 투명 오버레이
                     }
                     return null; // 기본
                   }),
@@ -114,9 +120,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       children: [
                         Spacer(flex: 2),
-                        Icon(Icons.add, color: context.colors.onPrimary),
+                        Icon(
+                          Icons.add,
+                          color: context.colors.onPrimary, // + 아이콘
+                        ), 
                         Text(
-                          'Create',
+                          'Create', // Create 버튼 텍스트
                           style: context.textTheme.bodyMedium!.copyWith(
                             color: context.colors.onPrimary,
                             fontWeight: FontWeight.w700,
