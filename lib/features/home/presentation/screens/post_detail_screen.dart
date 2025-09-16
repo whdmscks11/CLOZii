@@ -62,7 +62,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         controller: _controller,
         slivers: [
           SliverAppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.black,
             surfaceTintColor: Colors.transparent,
             stretch: true,
             pinned: true,
@@ -74,38 +74,54 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 : Colors.black,
             expandedHeight: MediaQuery.of(context).size.height * 0.45,
 
-            flexibleSpace: FlexibleSpaceBar(
-              expandedTitleScale: 1.0,
-              collapseMode: CollapseMode.pin,
-              title: Align(
-                alignment: Alignment.topCenter,
-                child: Builder(
-                  builder: (context) => Container(
-                    height: MediaQuery.of(context).padding.top + kToolbarHeight,
-                    decoration: BoxDecoration(
-                      gradient: _isExpanded
-                          ? LinearGradient(
-                              colors: [Colors.black38, Colors.transparent],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            )
-                          : null,
-                      color: !_isExpanded ? Colors.white : null,
-                    ),
-                  ),
-                ),
-              ),
-              background: Stack(
-                children: [
-                  PageView(
-                    children: [
-                      ...widget.post.imageUrls.map(
-                        (url) => Image.network(url, fit: BoxFit.cover),
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                final double expandedHeight =
+                    MediaQuery.of(context).size.height * 0.45;
+                final double toolbarHeight =
+                    kToolbarHeight + MediaQuery.of(context).padding.top;
+                final double collapseExtent =
+                    expandedHeight - constraints.maxHeight;
+
+                return Stack(
+                  children: [
+                    // 배경 이미지 - Fade 효과 완전 제거
+                    Positioned(
+                      top: -collapseExtent - MediaQuery.of(context).padding.top,
+                      left: 0,
+                      right: 0,
+                      height:
+                          expandedHeight + MediaQuery.of(context).padding.top,
+                      child: PageView(
+                        children: [
+                          ...widget.post.imageUrls.map(
+                            (url) => Image.network(url, fit: BoxFit.cover),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                    // 상단 오버레이 (앱바)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: toolbarHeight,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: _isExpanded
+                              ? LinearGradient(
+                                  colors: [Colors.black38, Colors.transparent],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                )
+                              : null,
+                          color: !_isExpanded ? Colors.white : null,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
             actions: [
               IconButton(
